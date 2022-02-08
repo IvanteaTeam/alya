@@ -9,7 +9,9 @@ target_include_directories(alya_audio PUBLIC ${ALYA_ROOT}/include)
 
 target_link_libraries(alya_audio PUBLIC alya::utility alya::resource alya::audio::core)
 
-target_link_libraries(alya_audio PRIVATE CONAN_PKG::libsndfile)
+find_package(SndFile QUIET REQUIRED)
+
+target_link_libraries(alya_audio PRIVATE SndFile::sndfile)
 
 target_compile_features(alya_audio PUBLIC cxx_std_20)
 

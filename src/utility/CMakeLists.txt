@@ -8,7 +8,11 @@ add_library(alya_utility STATIC ${headers} ${src})
 
 target_include_directories(alya_utility PUBLIC ${ALYA_ROOT}/include)
 
-target_link_libraries(alya_utility PUBLIC CONAN_PKG::utfcpp CONAN_PKG::tl-expected CONAN_PKG::glm)
+find_package(utf8cpp QUIET REQUIRED)
+find_package(glm QUIET REQUIRED)
+find_package(tl-expected QUIET REQUIRED)
+
+target_link_libraries(alya_utility PUBLIC utf8cpp::utf8cpp tl::expected glm::glm)
 
 target_compile_features(alya_utility PUBLIC cxx_std_20)
 

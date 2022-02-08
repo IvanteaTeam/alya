@@ -7,7 +7,9 @@ add_library(alya_async STATIC ${headers} ${src})
 
 target_include_directories(alya_async PUBLIC ${ALYA_ROOT}/include)
 
-target_link_libraries(alya_async PUBLIC alya::utility CONAN_PKG::boost)
+find_package(Boost QUIET REQUIRED)
+
+target_link_libraries(alya_async PUBLIC alya::utility Boost::Boost)
 
 target_compile_features(alya_async PUBLIC cxx_std_20)
 

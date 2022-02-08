@@ -10,15 +10,13 @@ set_source_files_properties(${ps} PROPERTIES VS_SHADER_TYPE Pixel VS_SHADER_MODE
 
 add_executable(gl_dev main.cpp stb_image.cpp scene.hpp help.cpp help.hpp model.hpp model.cpp ${vs} ${ps} "shaders/3/c.h")
 
-
+find_package(assimp QUIET REQUIRED)
 
 target_link_libraries(gl_dev 
 PRIVATE 
 alya::graphics
 alya::resource
-CONAN_PKG::stb
-CONAN_PKG::glm
-CONAN_PKG::assimp
+assimp::assimp
 )
 
 

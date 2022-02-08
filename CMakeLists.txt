@@ -7,10 +7,11 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 project(alya)
 
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
 
-conan_basic_setup(TARGETS)
+conan_basic_setup()
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_BINARY_DIR})
 
 set(ALYA_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
