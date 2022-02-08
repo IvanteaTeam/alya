@@ -9,7 +9,7 @@ class AlyaRecipe(ConanFile):
     default_options = {}
 
     exports_sources = "CMakeLists.txt", "src/*", "include/*", "test_apps/*"
-    requires = ['boost/1.78.0', 'glm/0.9.9.8', 'stb/cci.20210713', 'tl-expected/20190710', 'utfcpp/3.2.1', 'libsndfile/1.0.31', 'assimp/5.0.1']
+    requires = ['boost/1.78.0', 'glm/0.9.9.8', 'stb/cci.20210713', 'utfcpp/3.2.1', 'libsndfile/1.0.31', 'assimp/5.0.1']
     
     generators = 'cmake', 'cmake_find_package'
 

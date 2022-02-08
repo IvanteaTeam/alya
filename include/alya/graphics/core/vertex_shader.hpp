@@ -1,7 +1,6 @@
 #pragma once
 #include<alya/resource/async_load.hpp>
 #include<alya/graphics/core/details/d3d11/object_base.hpp>
-#include<alya/utility/expected.hpp>
 #include<system_error>
 
 namespace alya::graphics::core
