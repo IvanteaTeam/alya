@@ -36,7 +36,7 @@ namespace dev
 	}
 
 
-	Mesh::Mesh(graphics::context_base&ctx, std::vector<glm::vec3> const&vs, std::vector<glm::vec2> const& tcs)
+	Mesh::Mesh(graphics::core::context_base&ctx, std::vector<glm::vec3> const&vs, std::vector<glm::vec2> const& tcs)
 		: ctx(ctx),
 		positions(vs.data(), vs.size(), ctx),
 		tex_coords(tcs.data(), tcs.size(), ctx)
@@ -62,7 +62,7 @@ namespace dev
 		return (convert_vector(diffuse_color) + convert_vector(specular) + convert_vector(ambient));
 	}
 
-	static Mesh LoadMesh(graphics::context_base&ctx, const aiMesh*mesh)
+	static Mesh LoadMesh(graphics::core::context_base&ctx, const aiMesh*mesh)
 	{
 		std::vector<glm::vec3> vs;
 		std::vector<glm::vec2> tcs;
@@ -97,7 +97,7 @@ namespace dev
 		return out;
 	}
 
-	static void LoadNode(graphics::context_base&ctx, std::vector<Mesh>&meshes,const aiScene*scene, const aiNode*node, glm::mat4 parent_transform)
+	static void LoadNode(graphics::core::context_base&ctx, std::vector<Mesh>&meshes,const aiScene*scene, const aiNode*node, glm::mat4 parent_transform)
 	{
 		auto current_transform = parent_transform * convert_matrix(&node->mTransformation);
 
@@ -120,7 +120,7 @@ namespace dev
 		}
 	}
 
-	Model::Model(graphics::context_base& ctx, std::string_view file, const graphics::vertex_shader& vs, const graphics::pixel_shader& ps)
+	Model::Model(graphics::core::context_base& ctx, std::string_view file, const graphics::core::vertex_shader& vs, const graphics::core::pixel_shader& ps)
 		: ctx(ctx), vshader(vs), pshader(ps), stream({{{"POSITION"}, {"TEX_COORD"}}}, vshader, ctx),
 		cb(ctx)
 	{

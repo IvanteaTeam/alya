@@ -13,7 +13,7 @@ namespace dev {
 	private:
 
 
-		graphics::context_base& ctx;
+		graphics::core::context_base& ctx;
 		Model&model;
 		
 		glm::vec2 angle{ 0, 0 }, pos{ 0, 0 }, window{1000, 1000};
@@ -87,7 +87,7 @@ namespace dev {
 
 		}
 
-		inline Scene(graphics::context_base&ctx, Model&model) : 
+		inline Scene(graphics::core::context_base&ctx, Model&model) : 
 			ctx(ctx),
 			//model1(ctx, root + "models/1/yes1.fbx"),
 			//model2(ctx, root + "models/2/2.fbx"),

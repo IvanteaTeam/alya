@@ -11,8 +11,8 @@
 
 #include<vector>
 
-#include<alya/graphics/vertex_buffer.hpp>
-#include<alya/graphics/vertex_shader.hpp>
+#include<alya/graphics/core/vertex_buffer.hpp>
+#include<alya/graphics/core/vertex_shader.hpp>
 
 namespace dev {
 	
@@ -22,9 +22,9 @@ namespace dev {
 	{
 	private:
 
-		graphics::context_base& ctx;
-		graphics::vertex_buffer<glm::vec3, graphics::memory_qualifier::immutable> positions;
-		graphics::vertex_buffer<glm::vec2, graphics::memory_qualifier::immutable> tex_coords;
+		graphics::core::context_base& ctx;
+		graphics::core::vertex_buffer<glm::vec3, graphics::core::memory_qualifier::immutable> positions;
+		graphics::core::vertex_buffer<glm::vec2, graphics::core::memory_qualifier::immutable> tex_coords;
 		size_t vertices_count;
 		glm::mat4 transform;
 		glm::vec3 color;
@@ -32,7 +32,7 @@ namespace dev {
 
 		friend class Model;
 	public:
-		Mesh(graphics::context_base& ctx, std::vector<glm::vec3>const& vetices, std::vector<glm::vec2>const& tex_coords);
+		Mesh(graphics::core::context_base& ctx, std::vector<glm::vec3>const& vetices, std::vector<glm::vec2>const& tex_coords);
 		Mesh(Mesh&&) = default;
 		Mesh(Mesh const&) = delete;
 		Mesh& operator=(Mesh&&) = delete;
@@ -65,18 +65,18 @@ namespace dev {
 	public:
 		using cb_t = std::tuple<glm::mat4, glm::mat4, glm::mat4, glm::vec3>;
 	private:
-		graphics::context_base& ctx;
-		const graphics::vertex_shader&vshader;
-		const graphics::pixel_shader&pshader;
+		graphics::core::context_base& ctx;
+		const graphics::core::vertex_shader&vshader;
+		const graphics::core::pixel_shader&pshader;
 		std::vector<Mesh> meshes;
-		graphics::vertex_stream<glm::vec3, glm::vec2> stream;
+		graphics::core::vertex_stream<glm::vec3, glm::vec2> stream;
 		
 		
 
-		graphics::constant_buffer<cb_t> cb;
+		graphics::core::constant_buffer<cb_t> cb;
 		glm::mat4 transform;
 	public:
-		Model(graphics::context_base& ctx, std::string_view file, const graphics::vertex_shader& vs, const graphics::pixel_shader& ps);
+		Model(graphics::core::context_base& ctx, std::string_view file, const graphics::core::vertex_shader& vs, const graphics::core::pixel_shader& ps);
 		Model(Model&&) = default;
 		Model(Model const&) = delete;
 		Model& operator=(Model&&) = default;

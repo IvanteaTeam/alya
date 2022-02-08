@@ -3,10 +3,10 @@
 //#include<alya/gl/texture.hpp>
 #include<string>
 
-#include<alya/graphics/context.hpp>
-#include<alya/graphics/texture2d.hpp>
-#include<alya/graphics/constant_buffer.hpp>
-#include<alya/graphics/vertex_stream.hpp>
+#include<alya/graphics/core/context.hpp>
+#include<alya/graphics/core/texture2d.hpp>
+#include<alya/graphics/core/constant_buffer.hpp>
+#include<alya/graphics/core/vertex_stream.hpp>
 
 #include<glm/glm.hpp>
 #include<glm/ext.hpp>
@@ -16,7 +16,7 @@ using namespace alya;
 
 extern std::atomic<bool> end;
 
-namespace gfx = alya::graphics;
+namespace gfx = alya::graphics::core;
 
 namespace std
 {
@@ -37,7 +37,7 @@ namespace std
 
 }
 
-namespace alya::graphics
+namespace alya::graphics::core
 {
 
 

@@ -14,7 +14,7 @@ find_package(assimp QUIET REQUIRED)
 
 target_link_libraries(gl_dev 
 PRIVATE 
-alya::graphics
+alya::graphics::core
 alya::resource
 assimp::assimp
 )

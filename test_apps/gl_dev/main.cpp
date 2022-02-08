@@ -4,12 +4,12 @@
 #include<alya/resource/async_import.hpp>
 #include<alya/resource/file_loader.hpp>
 #include<alya/ui/core/window.hpp>
-#include<alya/graphics/context.hpp>
-#include<alya/graphics/vertex_buffer.hpp>
-#include<alya/graphics/vertex_stream.hpp>
-#include<alya/graphics/frame_buffer.hpp>
-#include<alya/graphics/color_buffer_view.hpp>
-#include<alya/graphics/depth_stencil_buffer_view.hpp>
+#include<alya/graphics/core/context.hpp>
+#include<alya/graphics/core/vertex_buffer.hpp>
+#include<alya/graphics/core/vertex_stream.hpp>
+#include<alya/graphics/core/frame_buffer.hpp>
+#include<alya/graphics/core/color_buffer_view.hpp>
+#include<alya/graphics/core/depth_stencil_buffer_view.hpp>
 #include<glm/glm.hpp>
 #include<glm/ext.hpp>
 #include"model.hpp"
@@ -22,8 +22,6 @@ using namespace alya;
 #define BUILD_DIR __FILE__"/../../../build/bin/"
 
 std::atomic<bool> end = false;
-
-namespace gfx = alya::graphics;
 
 void show_exception(std::exception_ptr e)
 {

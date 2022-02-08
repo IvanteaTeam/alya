@@ -9,6 +9,8 @@ project(alya)
 
 include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
 
+set(CONAN_CMAKE_SILENT_OUTPUT ON)
+
 conan_basic_setup()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_BINARY_DIR})
@@ -21,7 +23,7 @@ add_subdirectory(${ALYA_ROOT}/src/async)
 add_subdirectory(${ALYA_ROOT}/src/resource)
 add_subdirectory(${ALYA_ROOT}/src/audio_core)
 add_subdirectory(${ALYA_ROOT}/src/audio)
-add_subdirectory(${ALYA_ROOT}/src/graphics)
+add_subdirectory(${ALYA_ROOT}/src/graphics_core)
 
 
 set_target_properties(alya_utility
@@ -30,7 +32,7 @@ alya_async
 alya_resource
 alya_audio_core
 alya_audio
-alya_graphics
+alya_graphics_core
 PROPERTIES FOLDER "alya"
 )
 
