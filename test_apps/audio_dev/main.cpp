@@ -29,13 +29,13 @@ void run()
 	audio::engine engine;
 
 	std::atomic<bool> end = false;
-
+	
 	([&]()->async::promise<void> {
 
 		auto sample = co_await resource::async_import<audio::basic_sample<audio::engine::wave_format>>(loader, __FILE__"/../1.ogg", tp.get_executor());
 
 		co_await audio::async_play(engine, sample);
-
+		
 	}
 	)().except(show_exception).then([&]() { end = true; });
 

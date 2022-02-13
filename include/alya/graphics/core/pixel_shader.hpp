@@ -1,5 +1,4 @@
 #pragma once
-#include<alya/resource/async_load.hpp>
 #include<alya/graphics/core/details/d3d11/object_base.hpp>
 #include<system_error>
 
@@ -19,11 +18,12 @@ namespace alya::graphics::core
 		{
 		public:
 
-			template<resource::loader L, typename C>
-			async::promise<pixel_shader> operator()(L& loader, typename L::source_type path, async::executor auto ex, C& ctx)
+			template<typename Context>
+			pixel_shader operator()(const auto& data, Context& ctx)
 			{
-				auto data = co_await resource::async_load(loader, std::move(path));
-				co_return pixel_shader(data.data(), data.size(), ctx);
+				auto data_begin = reinterpret_cast<const char*>(&*std::begin(data));
+				auto data_end = reinterpret_cast<const char*>(&*--std::end(data) + 1);
+				return pixel_shader(data_begin, data_end - data_begin, ctx);
 			}
 		};
 

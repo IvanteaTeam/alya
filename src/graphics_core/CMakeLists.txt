@@ -7,7 +7,7 @@ add_library(alya_graphics_core STATIC ${headers} ${src})
 
 target_include_directories(alya_graphics_core PUBLIC ${ALYA_ROOT}/include)
 
-target_link_libraries(alya_graphics_core PUBLIC alya::ui::core alya::resource)
+target_link_libraries(alya_graphics_core PUBLIC alya::ui::core)
 
 target_link_libraries(alya_graphics_core PRIVATE d3d11 dxgi dxguid)
 

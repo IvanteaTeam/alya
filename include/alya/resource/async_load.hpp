@@ -4,10 +4,10 @@
 namespace alya::resource
 {
 	
-	template<loader L>
-	async::promise<typename L::data_type> async_load(L&l, typename L::source_type s)
+	template<loader Loader>
+	async::promise<typename Loader::data_type> async_load(Loader&loader, const typename Loader::source_type&source)
 	{
-		return l.async_load(std::move(s));
+		return loader.async_load(source);
 	}
 
 }

@@ -7,7 +7,7 @@ add_library(alya_audio STATIC ${headers} ${src})
 
 target_include_directories(alya_audio PUBLIC ${ALYA_ROOT}/include)
 
-target_link_libraries(alya_audio PUBLIC alya::utility alya::resource alya::audio::core)
+target_link_libraries(alya_audio PUBLIC alya::async alya::audio::core)
 
 find_package(SndFile QUIET REQUIRED)
 

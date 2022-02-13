@@ -1,6 +1,7 @@
 #pragma once
 #include<memory>
 #include<array>
+#include<tuple>
 
 namespace alya::resource::details
 {
@@ -15,11 +16,11 @@ namespace alya::resource::details
 		bool flipped
 	)noexcept;
 
-	template<typename A>
-	std::tuple<typename A::value_type*, size_t, size_t> image_import_impl(const void*data, size_t size, A&alloc_, size_t components, bool flipped)
+	template<typename Allocator>
+	std::tuple<typename Allocator::value_type*, size_t, size_t> image_import_impl(const void*data, size_t size, Allocator&alloc_, size_t components, bool flipped)
 	{
-		using T = typename std::allocator_traits<A>::value_type;
-		thread_local A* al = &alloc_;
+		using T = typename std::allocator_traits<Allocator>::value_type;
+		thread_local Allocator* al = &alloc_;
 		thread_local std::exception_ptr curr_exception;
 		thread_local std::array<std::pair<void*, size_t>, 100> allocs_{};
 		thread_local auto allocs = allocs_.begin();

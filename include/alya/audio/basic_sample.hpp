@@ -1,7 +1,6 @@
 #pragma once
 #include<memory>
-#include<alya/resource/async_load.hpp>
-#include<alya/async/execute.hpp>
+#include<alya/async/promise.hpp>
 #include<alya/audio/basic_decoder.hpp>
 #include<alya/resource/bad_format.hpp>
 #include<alya/audio/basic_engine.hpp>
@@ -99,27 +98,25 @@ namespace alya::audio
 		using sample_type = typename wave_format::sample_type;
 		static const size_t channels = wave_format::channels;
 		
-		template<resource::loader L>
-		async::promise<basic_sample<wave_format, allocator_type>> operator()(L& loader, typename L::source_type source, async::executor auto ex, const allocator_type & alloc = allocator_type{})
+		template<typename Data>
+		basic_sample<wave_format, allocator_type> operator()(const Data& data, allocator_type alloc = allocator_type{})
 		{
-			co_return co_await async::execute(ex, [data = co_await resource::async_load(loader, source), alloc = alloc]()mutable {
-				basic_decoder<sample_type> decoder;
-				std::error_code e;
-				decoder.open(data.begin(), data.end(), e);
-				if (e)
-					throw resource::bad_format{};
-				if (decoder.channels() != channels)
-					throw resource::bad_format{};
-				size_t buffer_size = decoder.frames() * channels;
-				auto buffer = alloc.allocate(buffer_size);
-				decoder.decode_some(buffer, buffer + buffer_size, e);
-				if (e)
-				{
-					alloc.deallocate(buffer, buffer_size);
-					throw resource::bad_format{};
-				}
-				return basic_sample(buffer, decoder.frames(), decoder.sample_rate(), alloc);
-			});
+			basic_decoder<sample_type> decoder;
+			std::error_code e;
+			decoder.open(std::begin(data), std::end(data), e);
+			if (e)
+				throw resource::bad_format{};
+			if (decoder.channels() != channels)
+				throw resource::bad_format{};
+			size_t buffer_size = decoder.frames() * channels;
+			auto buffer = alloc.allocate(buffer_size);
+			decoder.decode_some(buffer, buffer + buffer_size, e);
+			if (e)
+			{
+				alloc.deallocate(buffer, buffer_size);
+				throw resource::bad_format{};
+			}
+			return basic_sample(buffer, decoder.frames(), decoder.sample_rate(), alloc);
 		}
 
 	};
