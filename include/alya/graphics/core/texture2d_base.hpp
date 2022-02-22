@@ -1,5 +1,4 @@
 #pragma once
-#include<alya/graphics/core/details/d3d11/object_base.hpp>
 #include<alya/graphics/core/details/pixel_type.hpp>
 #include<alya/utility/image_view.hpp>
 #include<alya/graphics/core/memory_qualifier.hpp>

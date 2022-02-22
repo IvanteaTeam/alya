@@ -99,7 +99,6 @@ namespace alya::graphics::core
 		//std::optional<render_buffer> back_buffer_;
 		//std::optional<graphics::render_buffer_base> back_buffer_;
 		//std::optional<graphics::details::texture2d_base> back_buffer_texture;
-		frame_buffer_base* current_frame_buffer;
 
 		ui::core::window_base::native_handle_type hwnd;
 		size_t width, height;

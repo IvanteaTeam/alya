@@ -10,7 +10,7 @@ namespace alya::graphics::core
 {
 
 	context_base::context_base(HWND hwnd, details::pixel_type color, details::pixel_type depth, size_t samples)
-		: current_frame_buffer(nullptr), samples(samples), color(color), depth(depth), hwnd(hwnd)
+		: samples(samples), color(color), depth(depth), hwnd(hwnd)
 	{
 		windows::com::initialize();
 
@@ -162,13 +162,16 @@ namespace alya::graphics::core
 	
 	void context_base::bind_frame_buffer(frame_buffer_base& fb)
 	{
-		fb.bind();
+		std::array<ID3D11RenderTargetView*, 8> rtvs{};
+
+		std::transform(fb.render_target_views_.begin(), fb.render_target_views_.end(), rtvs.begin(), [](auto& ptr) { return ptr.get(); });
+
+		ALYA_GFX_CALL(device_context->OMSetRenderTargets(8, rtvs.data(), fb.depth_stencil_view_.get()));
 	}
 
 	void context_base::bind_frame_buffer(default_frame_buffer_t)
 	{
-		current_frame_buffer = nullptr;
-		std::array<d3d11::rtv_t*, 8> rtvs{};
+		std::array<ID3D11RenderTargetView*, 8> rtvs{};
 		rtvs[0] = back_buffer_ms ? back_buffer_ms.get() : back_buffer.get();
 		ALYA_GFX_CALL(device_context->OMSetRenderTargets(rtvs.size(), rtvs.data(), depth_buffer ? depth_buffer.get() : nullptr));
 	}

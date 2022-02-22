@@ -5,7 +5,7 @@ namespace alya::graphics::core
 
 	enum class memory_qualifier
 	{
-		immutable,
+		immutable = 1,
 		dynamic,
 		staging,
 		default_
