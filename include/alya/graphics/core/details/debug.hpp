@@ -1,5 +1,5 @@
 #pragma once
-#include<alya/graphics/core/details/dxgi/debug_queue.hpp>
+#include<alya/graphics/core/details/impl/dxgi_debug_queue.hpp>
 #include<alya/utility/deffer.hpp>
 #include<alya/utility/assert.hpp>
 
@@ -16,7 +16,7 @@
 #if ALYA_GFX_DEBUG
 #define ALYA_GFX_CALL(expr) (([&](const auto&){ return expr; })(alya::deffer{[]()\
 { \
-	auto&queue = alya::graphics::core::dxgi::get_debug_messages();\
+	auto&queue = alya::graphics::core::details::dxgi_debug_queue();\
 	if(queue.size() == 0)\
 		return;\
 	std::string msgs;\
