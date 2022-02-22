@@ -6,7 +6,41 @@
 
 namespace alya::graphics::core::details
 {
+	d3d11_texture2d::d3d11_texture2d(
+		size_t width,
+		size_t height,
+		size_t mipmaps,
+		size_t layers,
+		size_t samples,
+		pixel_type pixel,
+		memory_qualifier memory,
+		texture_binding bind,
+		windows::com::shared_ptr<ID3D11Device> device
+	) : 
+		width_(width),
+		height_(height),
+		mipmaps_(mipmaps),
+		layers_(layers)
+	{
+		auto [usage, cpu_access] = d3d11_usage(memory);
 
+		D3D11_TEXTURE2D_DESC desc = {};
+		desc.Format = dxgi_format(pixel);
+		desc.Width = width;
+		desc.Height = height;
+		desc.SampleDesc.Count = samples;
+		desc.SampleDesc.Quality = 0;
+		desc.MipLevels = mipmaps;
+		desc.Usage = usage;
+		desc.CPUAccessFlags = cpu_access;
+		desc.BindFlags = static_cast<D3D11_BIND_FLAG>(bind);
+		desc.ArraySize = layers;
+		desc.MiscFlags = 0;
+
+		ALYA_GFX_CALL(device->CreateTexture2D(&desc, nullptr, &impl_));
+
+	}
+	
 	d3d11_texture2d::d3d11_texture2d(
 		size_t width,
 		size_t height,

@@ -1,5 +1,6 @@
 #pragma once
 #include<alya/graphics/core/texture2d_base.hpp>
+#include<alya/graphics/core/details/impl/d3d11_depth_stencil_view.hpp>
 
 namespace alya::graphics::core
 {
@@ -8,14 +9,15 @@ namespace alya::graphics::core
 	{
 	public:
 		
-		depth_stencil_buffer_view_base(texture2d_base&texture);
-		depth_stencil_buffer_view_base(texture2d_base& texture, size_t mipmap);
-
-		void clear_depth(float);
+		depth_stencil_buffer_view_base(texture2d_base&texture) : 
+			impl_(texture.impl_.native_handle())
+		{}
+		depth_stencil_buffer_view_base(texture2d_base& texture, size_t mipmap) : 
+			impl_(texture.impl_.native_handle(), mipmap)
+		{}
 
 	private:
-		d3d11::dsv_ptr dsv;
-		d3d11::device_context_ptr ctx;
+		details::d3d11_depth_stencil_view impl_;
 		friend class frame_buffer_base;
 	};
 

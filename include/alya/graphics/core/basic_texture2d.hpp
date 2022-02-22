@@ -28,6 +28,7 @@ namespace alya::graphics::core
 			width,
 			height,
 			mipmaps,
+			samples,
 			details::make_pixel_type<value_type>(),
 			memory_qualifier,
 			binding,

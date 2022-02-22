@@ -1,5 +1,6 @@
 #pragma once
 #include<alya/graphics/core/texture2d_base.hpp>
+#include<alya/graphics/core/details/impl/d3d11_render_target_view.hpp>
 
 namespace alya::graphics::core
 {
@@ -7,14 +8,16 @@ namespace alya::graphics::core
 	{
 	public:
 
-		color_buffer_view_base(texture2d_base&, size_t m);
-		color_buffer_view_base(texture2d_base&);
+		color_buffer_view_base(texture2d_base&texture, size_t mipmap) : 
+			impl_(texture.impl_.native_handle(), mipmap)
+		{}
 
-		void clear_color(float, float, float, float);
+		color_buffer_view_base(texture2d_base&texture) :
+			impl_(texture.impl_.native_handle())
+		{}
 
 	private:
-		d3d11::rtv_ptr rtv;
-		d3d11::device_context_ptr ctx;
+		details::d3d11_render_target_view impl_;
 		friend class frame_buffer_base;
 	};
 }

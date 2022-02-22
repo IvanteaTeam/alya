@@ -290,7 +290,7 @@ namespace alya::graphics::core
 
 	void context_base::bind_texture(pixel_shader_target_t, const texture_view& view, size_t slot)
 	{
-		device_context->PSSetShaderResources(slot, 1, view.srv.address());
+		device_context->PSSetShaderResources(slot, 1, view.impl_.native_handle().address());
 	}
 
 }

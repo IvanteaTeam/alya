@@ -10,14 +10,14 @@ namespace alya::graphics::core
 
 	void frame_buffer_base::attach_color_buffer(color_buffer_view_base*view, size_t slot)
 	{
-		rtvs[slot] = view ? view->rtv : nullptr;
+		rtvs[slot] = view ? view->impl_.native_handle() : nullptr;
 		if (*curr_frame_buffer == this)
 			bind();
 	}
 
 	void frame_buffer_base::attach_depth_stencil_buffer(depth_stencil_buffer_view_base* view)
 	{
-		dsv = view ? view->dsv : nullptr;
+		dsv = view ? view->impl_.native_handle() : nullptr;
 		if (*curr_frame_buffer == this)
 			bind();
 	}
