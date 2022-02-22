@@ -153,8 +153,8 @@ namespace alya::graphics::core
 
 		void emplace(const T&data)
 		{
-			auto map = map_write_discard(*this);
-			*map.begin() = details::constant_buffer_align<T>(data);
+			auto m = this->map(map_t::write_discard);
+			*m.begin() = details::constant_buffer_align<T>(data);
 		}
 
 	private:

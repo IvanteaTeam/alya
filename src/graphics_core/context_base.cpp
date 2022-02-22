@@ -210,12 +210,12 @@ namespace alya::graphics::core
 
 	void context_base::bind_constants(vertex_shader_target_t, const buffer_base& buffer, size_t slot)
 	{
-		ALYA_GFX_CALL(device_context->VSSetConstantBuffers(slot, 1, buffer.buffer.address()));
+		ALYA_GFX_CALL(device_context->VSSetConstantBuffers(slot, 1, buffer.impl_.native_handle().address()));
 	}
 
 	void context_base::bind_constants(pixel_shader_target_t, const buffer_base& buffer, size_t slot)
 	{
-		ALYA_GFX_CALL(device_context->PSSetConstantBuffers(slot, 1, buffer.buffer.address()));
+		ALYA_GFX_CALL(device_context->PSSetConstantBuffers(slot, 1, buffer.impl_.native_handle().address()));
 	}
 
 	void context_base::set_viewport(int x, int y, int w, int h)

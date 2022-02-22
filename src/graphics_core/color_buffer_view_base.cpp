@@ -4,26 +4,32 @@
 namespace alya::graphics::core
 {
 
-	color_buffer_view_base::color_buffer_view_base(texture2d_base& t)
-		: ctx(t.get_device_context())
+	color_buffer_view_base::color_buffer_view_base(texture2d_base& texture)
 	{
+		windows::com::shared_ptr<ID3D11Device> device;
+		
+		auto impl = texture.impl_.native_handle();
+
+		impl->GetDevice(&device);
+		device->GetImmediateContext(&ctx);
+
 		D3D11_RENDER_TARGET_VIEW_DESC desc{};
 		desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DMS;
-		auto res = t.get_device()->CreateRenderTargetView(t.texture.get(), &desc, &rtv);
+		auto res = device->CreateRenderTargetView(impl.get(), &desc, &rtv);
 		if (res != S_OK)
 			throw std::system_error{ windows::make_error_code(res) };
 	}
-
+	/*
 	color_buffer_view_base::color_buffer_view_base(texture2d_base& t, size_t m)
 		: ctx(t.get_device_context())
 	{
 		D3D11_RENDER_TARGET_VIEW_DESC desc{};
 		desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 		desc.Texture2D.MipSlice = m;
-		auto res = t.get_device()->CreateRenderTargetView(t.texture.get(), &desc, &rtv);
+		auto res = t.get_device()->CreateRenderTargetView(t.impl_.get(), &desc, &rtv);
 		if (res != S_OK)
 			throw std::system_error{ windows::make_error_code(res) };
-	}
+	}*/
 
 	void color_buffer_view_base::clear_color(float r, float g, float b, float a)
 	{

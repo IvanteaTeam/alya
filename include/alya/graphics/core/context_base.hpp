@@ -109,6 +109,8 @@ namespace alya::graphics::core
 
 		friend class frame_buffer_base;
 		friend class d3d11::object_base;
+		friend class texture2d_base;
+		friend class buffer_base;
 	};
 
 }

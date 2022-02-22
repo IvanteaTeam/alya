@@ -1,11 +1,18 @@
 #include<alya/graphics/core/buffer_base.hpp>
-#include<alya/graphics/core/details/debug.hpp>
-#include<alya/graphics/core/details/d3d11/usage_traits.hpp>
+#include<alya/graphics/core/context_base.hpp>
+//#include<alya/graphics/core/details/debug.hpp>
+//#include<alya/graphics/core/details/d3d11/usage_traits.hpp>
 
 namespace alya::graphics::core
 {
 
+	buffer_base::buffer_base(const void*init, size_t size, memory_qualifier memory, buffer_binding bind, context_base&context) : 
+		impl_(init, size, memory, bind, context.device)
+	{
 
+	}
+
+	/*
 	buffer_base::buffer_base(
 		const void*data, 
 		size_t size,
@@ -57,6 +64,6 @@ namespace alya::graphics::core
 		if(buffer)
 			ALYA_GFX_CALL(get_device_context()->Unmap(buffer.get(), 0));
 	}
-
+	*/
 
 }

@@ -1,18 +1,38 @@
 #include<alya/graphics/core/texture2d_base.hpp>
-#include<alya/graphics/core/details/debug.hpp>
-#include<alya/graphics/core/details/d3d11/usage_traits.hpp>
-#include<alya/utility/windows/win32_error.hpp>
+#include<alya/graphics/core/context_base.hpp>
 
 namespace alya::graphics::core
 {
-	
+
+	texture2d_base::texture2d_base(
+		size_t width,
+		size_t height,
+		details::pixel_type pixel,
+		memory_qualifier memory,
+		texture_binding bind,
+		context_base& context
+	)	:
+		impl_(
+			width, 
+			height, 
+			0,
+			1, 
+			nullptr,
+			pixel, 
+			memory,
+			bind, 
+			context.device
+		)
+	{}
+
+	/*
 	texture2d_base::texture2d_base(
 		const texture2d_base::init_t& init,
 		size_t width,
 		size_t height,
 		size_t samples,
 		bool generate_mipmaps,
-		dxgi::format format,
+		details::pixel_type pixel,
 		memory_qualifier Q,
 		texture_binding B,
 		d3d11::device_ptr device,
@@ -31,7 +51,7 @@ namespace alya::graphics::core
 		auto [usage, cpu_access] = d3d11::convert_usage(Q);
 
 		D3D11_TEXTURE2D_DESC desc = {};
-		desc.Format = static_cast<DXGI_FORMAT>(format);
+		desc.Format = static_cast<DXGI_FORMAT>(pixel);
 		desc.Width = width;
 		desc.Height = height;
 		desc.SampleDesc.Count = samples;
@@ -53,18 +73,18 @@ namespace alya::graphics::core
 			{
 				init_data.push_back(D3D11_SUBRESOURCE_DATA{ .pSysMem = data, .SysMemPitch = static_cast<uint32_t>(align), .SysMemSlicePitch = 0 });
 			}
-			ALYA_GFX_CALL(get_device()->CreateTexture2D(&desc, init_data.empty() ? nullptr : init_data.data(), &texture));
+			ALYA_GFX_CALL(get_device()->CreateTexture2D(&desc, init_data.empty() ? nullptr : init_data.data(), &impl_));
 		}
 		else
 		{
-			ALYA_GFX_CALL(get_device()->CreateTexture2D(&desc, nullptr, &texture));
+			ALYA_GFX_CALL(get_device()->CreateTexture2D(&desc, nullptr, &impl_));
 			
 			for (auto [data, align] : mipmaps)
-				get_device_context()->UpdateSubresource(texture.get(), D3D11CalcSubresource(0, 0, levels), nullptr, data, align, 0);
+				get_device_context()->UpdateSubresource(impl_.get(), D3D11CalcSubresource(0, 0, levels), nullptr, data, align, 0);
 			
 			windows::com::shared_ptr<ID3D11ShaderResourceView> view;
 
-			auto res = get_device()->CreateShaderResourceView(texture.get(), nullptr, view.address());
+			auto res = get_device()->CreateShaderResourceView(impl_.get(), nullptr, view.address());
 
 			if (res != S_OK)
 				throw std::system_error{windows::make_error_code(res)};

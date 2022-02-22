@@ -10,7 +10,7 @@ namespace alya::graphics::core
 		attribute_stream_base() = default;
 	protected:
 		inline attribute_stream_base(const buffer_base& buffer, size_t offset, size_t stride)
-			: buffer(buffer.buffer), offset(offset), stride(stride)
+			: buffer(buffer.impl_.native_handle()), offset(offset), stride(stride)
 		{}
 		mutable d3d11::buffer_ptr buffer;
 		size_t offset, stride;

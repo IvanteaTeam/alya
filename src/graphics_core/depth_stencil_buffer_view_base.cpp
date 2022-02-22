@@ -3,13 +3,13 @@
 
 namespace alya::graphics::core
 {
-
+	/*
 	depth_stencil_buffer_view_base::depth_stencil_buffer_view_base(texture2d_base& t)
 		: ctx(t.get_device_context())
 	{
 		D3D11_DEPTH_STENCIL_VIEW_DESC desc{};
 		desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
-		auto res = t.get_device()->CreateDepthStencilView(t.texture.get(), &desc, &dsv);
+		auto res = t.get_device()->CreateDepthStencilView(t.impl_.get(), &desc, &dsv);
 		if (res != S_OK)
 			throw std::system_error{windows::make_error_code(res)};
 	}
@@ -20,11 +20,11 @@ namespace alya::graphics::core
 		D3D11_DEPTH_STENCIL_VIEW_DESC desc{};
 		desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		desc.Texture2D.MipSlice = m;
-		auto res = t.get_device()->CreateDepthStencilView(t.texture.get(), &desc, &dsv);
+		auto res = t.get_device()->CreateDepthStencilView(t.impl_.get(), &desc, &dsv);
 		if (res != S_OK)
 			throw std::system_error{ windows::make_error_code(res) };
 	}
-
+	*/
 	void depth_stencil_buffer_view_base::clear_depth(float d)
 	{
 		ctx->ClearDepthStencilView(dsv.get(), D3D11_CLEAR_DEPTH, d, 0);

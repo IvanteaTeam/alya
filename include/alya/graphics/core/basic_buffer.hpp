@@ -1,79 +1,75 @@
 #pragma once
 #include<span>
 #include<alya/graphics/core/buffer_base.hpp>
+#include<alya/graphics/core/map.hpp>
 
 namespace alya::graphics::core
 {
 
 	template<typename T>
-	class basic_buffer_map;
+	class buffer_map;
 
 	template<typename T, memory_qualifier, buffer_binding>
 	class basic_buffer;
 
 	template<typename T>
-	class basic_const_buffer_map : protected buffer_map_base
+	class buffer_const_map : public buffer_map_base
 	{
 	public:
 		using value_type = T;
 
 		using iterator = const value_type*;
 
-		constexpr const value_type* data()const
+		const value_type* data()const noexcept
 		{
-			return reinterpret_cast<const value_type*>(buffer_map_base::data());
+			return static_cast<const value_type*>(buffer_map_base::data());
 		}
 
-		constexpr size_t size()const
+		size_t size()const noexcept
 		{
 			return buffer_map_base::size() / sizeof(value_type);
 		}
 
-		constexpr iterator begin()const
+		iterator begin()const noexcept
 		{
 			return data();
 		}
 
-		constexpr iterator end()const
+		iterator end()const noexcept
 		{
 			return begin() + size();
 		}
 
 	private:
-		explicit basic_const_buffer_map(buffer_map_base&&base) : buffer_map_base(std::move(base)) {}
+		buffer_const_map(buffer_map_base&&base) : buffer_map_base(std::move(base)) {}
 
-		friend class basic_buffer_map<T>;
-		
-		template<typename T, buffer_binding B>
-		friend basic_const_buffer_map<T> map_read(basic_buffer<T, memory_qualifier::staging, B>&);
-		template<typename T, buffer_binding B>
-		friend basic_buffer_map<T> map_write(basic_buffer<T, memory_qualifier::staging, B>&);
-		template<typename T, buffer_binding B>
-		friend basic_buffer_map<T> map_write_discard(basic_buffer<T, memory_qualifier::dynamic, B>&);
+		friend class buffer_map<value_type>;
+		template<typename, memory_qualifier, buffer_binding>
+		friend class basic_buffer;
 	};
 
 	template<typename T>
-	class basic_buffer_map : public basic_const_buffer_map<T>
+	class buffer_map : public buffer_const_map<T>
 	{
 	public:
-		using const_buffer_map = basic_const_buffer_map<T>;
+		
 		using value_type = T;
 		using iterator = value_type*;
-		using const_buffer_map::const_buffer_map;
+		using buffer_const_map<value_type>::buffer_const_map;
 		
-		constexpr value_type* data()
+		value_type* data()noexcept
 		{
-			return const_cast<value_type*>(const_buffer_map::data());
+			return const_cast<value_type*>(buffer_const_map<value_type>::data());
 		}
 
-		constexpr iterator begin()
+		iterator begin()noexcept
 		{
 			return data();
 		}
 
-		constexpr iterator end()
+		iterator end()noexcept
 		{
-			return begin() + const_buffer_map::size();
+			return begin() + buffer_const_map<value_type>::size();
 		}
 
 	};
@@ -90,53 +86,38 @@ namespace alya::graphics::core
 			: basic_buffer(nullptr, count, ctx) {}
 
 		template<typename Context>
-		basic_buffer(std::span<const value_type>data, Context&ctx)
-			: basic_buffer(data.begin(), data.end(), ctx) {}
-
-		template<typename Context>
 		basic_buffer(std::contiguous_iterator auto begin, std::contiguous_iterator auto end, Context& ctx)
-			: basic_buffer(std::addressof(*begin), end - begin, ctx) {}
+			: basic_buffer(&*begin, end - begin, ctx) {}
 
 		template<typename Context>
 		basic_buffer(const value_type* data, size_t count, Context& ctx)
-			: buffer_base(data, count, Q, B, ctx) {}
+			: buffer_base(data, count * sizeof(value_type), Q, B, ctx) {}
 
-		constexpr size_t size()const
+		size_t size()const noexcept
 		{
 			return buffer_base::size() / sizeof(value_type);
 		}
 
-	private:
-		/*
-		details::buffer_map_base map(details::d3d_map_type type)
+		buffer_const_map<value_type> map(map_t::read_t)
 		{
-			return buffer_base::map(type);
-		}*/
+			return buffer_base::map(details::map_type::read);
+		}
 
-		template<typename T, buffer_binding B>
-		friend basic_const_buffer_map<T> map_read(basic_buffer<T, memory_qualifier::staging, B>&);
-		template<typename T, buffer_binding B>
-		friend basic_buffer_map<T> map_write(basic_buffer<T, memory_qualifier::staging, B>&);
-		template<typename T, buffer_binding B>
-		friend basic_buffer_map<T> map_write_discard(basic_buffer<T, memory_qualifier::dynamic, B>&);
+		buffer_map<value_type> map(map_t::write_t)
+		{
+			return buffer_base::map(details::map_type::write);
+		}
+
+		buffer_map<value_type> map(map_t::read_write_t)
+		{
+			return buffer_base::map(details::map_type::read_write);
+		}
+
+		buffer_map<value_type> map(map_t::write_discard_t)
+		{
+			return buffer_base::map(details::map_type::write_discard);
+		}
+		
 	};
-
-	template<typename T, buffer_binding B>
-	basic_const_buffer_map<T> map_read(basic_buffer<T, memory_qualifier::staging, B>&buffer)
-	{
-		return basic_const_buffer_map<T>{details::map(buffer, details::map_type::read)};
-	}
-
-	template<typename T, buffer_binding B>
-	basic_buffer_map<T> map_write(basic_buffer<T, memory_qualifier::staging, B>& buffer)
-	{
-		return basic_buffer_map<T>{details::map(buffer, details::map_type::write)};
-	}
-
-	template<typename T, buffer_binding B>
-	basic_buffer_map<T> map_write_discard(basic_buffer<T, memory_qualifier::dynamic, B>& buffer)
-	{
-		return basic_buffer_map<T>{details::map(buffer, details::map_type::write_discard)};
-	}
 	
 }
