@@ -13,10 +13,10 @@ namespace alya::graphics::core::details
 		D3D11_BUFFER_DESC desc = {};
 		desc.ByteWidth = size;
 		desc.BindFlags = static_cast<D3D11_BIND_FLAG>(bind);
-		desc.CPUAccessFlags = static_cast<D3D11_CPU_ACCESS_FLAG>(cpu_access);
+		desc.CPUAccessFlags = cpu_access;
 		desc.MiscFlags = 0;
 		desc.StructureByteStride = 0;
-		desc.Usage = static_cast<D3D11_USAGE>(usage);
+		desc.Usage = usage;
 
 		D3D11_SUBRESOURCE_DATA init = {};
 		init.pSysMem = data;

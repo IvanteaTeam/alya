@@ -36,13 +36,13 @@ namespace alya::graphics::core
 
 	private:
 
-		static inline std::vector<std::pair<attribute_semantic, dxgi::format>> make_semantic(const std::array<attribute_semantic, sizeof...(T)>&sem)
+		static inline std::vector<std::pair<attribute_semantic, details::pixel_type>> make_semantic(const std::array<attribute_semantic, sizeof...(T)>&sem)
 		{
 			return ([&]<size_t...I>(std::index_sequence<I...>) {
-				std::array<dxgi::format, sizeof...(T)> arr = { dxgi::convert_format<T>()... };
+				std::array<details::pixel_type, sizeof...(T)> arr = { details::make_pixel_type<T>()... };
 					
 
-				return std::vector<std::pair<attribute_semantic, dxgi::format>>{std::pair{ sem[I], arr[I] }... };
+				return std::vector<std::pair<attribute_semantic, details::pixel_type>>{std::pair{ sem[I], arr[I] }... };
 			})(std::make_index_sequence<sizeof...(T)>{});
 		}
 

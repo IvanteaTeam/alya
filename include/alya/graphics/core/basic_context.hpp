@@ -12,8 +12,8 @@ namespace alya::graphics::core
 		explicit basic_context(ui::core::window_base::native_handle_type hwnd) : 
 			context_base(
 				hwnd,
-				dxgi::convert_format<C>(),
-				dxgi::convert_format<D>(),
+				details::make_pixel_type<C>(),
+				details::make_pixel_type<D>(),
 				S
 			) {}
 	};
@@ -26,8 +26,8 @@ namespace alya::graphics::core
 		explicit basic_context(ui::core::window_base::native_handle_type hwnd) :
 			context_base(
 				hwnd,
-				dxgi::convert_format<C>(),
-				dxgi::format::none,
+				details::make_pixel_type<C>(),
+				details::pixel_type::none,
 				S
 			) {}
 	};

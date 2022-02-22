@@ -1,6 +1,7 @@
 #pragma once
 #include<alya/graphics/core/details/impl/d3d11_texture2d.hpp>
 #include<alya/graphics/core/details/impl/d3d11_usage.hpp>
+#include<alya/graphics/core/details/impl/dxgi_format.hpp>
 #include<alya/graphics/core/details/debug.hpp>
 
 namespace alya::graphics::core::details
@@ -26,7 +27,7 @@ namespace alya::graphics::core::details
 		auto [usage, cpu_access] = d3d11_usage(memory);
 
 		D3D11_TEXTURE2D_DESC desc = {};
-		desc.Format = static_cast<DXGI_FORMAT>(pixel);
+		desc.Format = dxgi_format(pixel);
 		desc.Width = width;
 		desc.Height = height;
 		desc.SampleDesc.Count = 1;
@@ -72,7 +73,7 @@ namespace alya::graphics::core::details
 		impl_->GetDevice(&device);
 		windows::com::shared_ptr<ID3D11DeviceContext> context;
 		device->GetImmediateContext(&context);
-		context->UpdateSubresource(impl_.get(), index, nullptr, data.data, data.row_pitch, data.slice_pitch);
+		ALYA_GFX_CALL(context->UpdateSubresource(impl_.get(), index, nullptr, data.data, data.row_pitch, data.slice_pitch));
 	}
 
 	void d3d11_texture2d::generate_mipmaps()noexcept
@@ -81,7 +82,7 @@ namespace alya::graphics::core::details
 		impl_->GetDevice(&device);
 		windows::com::shared_ptr<ID3D11DeviceContext> context;
 		device->GetImmediateContext(&context);
-		context->GenerateMips(generate_mipmaps_view_.get());
+		ALYA_GFX_CALL(context->GenerateMips(generate_mipmaps_view_.get()));
 	}
 
 }

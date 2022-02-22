@@ -4,7 +4,6 @@
 #include<alya/ui/core/window_base.hpp>
 #include<alya/graphics/core/frame_buffer_base.hpp>
 #include<alya/graphics/core/vertex_stream_base.hpp>
-#include<alya/graphics/core/details/dxgi/format.hpp>
 #include<alya/graphics/core/sampler.hpp>
 #include<alya/graphics/core/depth_stencil_state.hpp>
 #include<alya/graphics/core/texture_view.hpp>
@@ -26,7 +25,7 @@ namespace alya::graphics::core
 	{
 	public:
 
-		context_base(ui::core::window_base::native_handle_type, dxgi::format color, dxgi::format depth, size_t samples);
+		context_base(ui::core::window_base::native_handle_type, details::pixel_type color, details::pixel_type depth, size_t samples);
 		context_base(context_base&&) = delete;
 		context_base&operator=(context_base&&) = delete;
 		context_base(const context_base&) = delete;
@@ -105,7 +104,7 @@ namespace alya::graphics::core
 		ui::core::window_base::native_handle_type hwnd;
 		size_t width, height;
 		size_t samples;
-		dxgi::format color, depth;
+		details::pixel_type color, depth;
 
 		friend class frame_buffer_base;
 		friend class d3d11::object_base;

@@ -1,5 +1,4 @@
 #pragma once
-#include<dxgi.h>
 #include<alya/graphics/core/depth_stencil_value.hpp>
 
 namespace alya::graphics::core::details
@@ -7,58 +6,58 @@ namespace alya::graphics::core::details
 
 	enum class pixel_type
 	{
-		si32_4 = DXGI_FORMAT_R32G32B32A32_SINT,
-		ui32_4 = DXGI_FORMAT_R32G32B32A32_UINT,
-		f32_4 = DXGI_FORMAT_R32G32B32A32_FLOAT,
+		si32_4 = 1,
+		ui32_4,
+		f32_4,
 
-		si32_3 = DXGI_FORMAT_R32G32B32_SINT,
-		ui32_3 = DXGI_FORMAT_R32G32B32_UINT,
-		f32_3 = DXGI_FORMAT_R32G32B32_FLOAT,
+		si32_3,
+		ui32_3,
+		f32_3,
 
-		si32_2 = DXGI_FORMAT_R32G32_SINT,
-		ui32_2 = DXGI_FORMAT_R32G32_UINT,
-		f32_2 = DXGI_FORMAT_R32G32_FLOAT,
+		si32_2,
+		ui32_2,
+		f32_2,
 
-		si32_1 = DXGI_FORMAT_R32_SINT,
-		ui32_1 = DXGI_FORMAT_R32_UINT,
-		f32_1 = DXGI_FORMAT_R32_FLOAT,
+		si32_1,
+		ui32_1,
+		f32_1,
 
-		si16_4 = DXGI_FORMAT_R16G16B16A16_SINT,
-		ui16_4 = DXGI_FORMAT_R16G16B16A16_UINT,
-		sn16_4 = DXGI_FORMAT_R16G16B16A16_SNORM,
-		un16_4 = DXGI_FORMAT_R16G16B16A16_UNORM,
-		f16_4 = DXGI_FORMAT_R16G16B16A16_FLOAT,
+		si16_4,
+		ui16_4,
+		sn16_4,
+		un16_4,
+		f16_4,
 
-		si16_2 = DXGI_FORMAT_R16G16_SINT,
-		ui16_2 = DXGI_FORMAT_R16G16_UINT,
-		sn16_2 = DXGI_FORMAT_R16G16_SNORM,
-		un16_2 = DXGI_FORMAT_R16G16_UNORM,
-		f16_2 = DXGI_FORMAT_R16G16_FLOAT,
+		si16_2,
+		ui16_2,
+		sn16_2,
+		un16_2,
+		f16_2 ,
 
-		si16_1 = DXGI_FORMAT_R16_SINT,
-		ui16_1 = DXGI_FORMAT_R16_UINT,
-		sn16_1 = DXGI_FORMAT_R16_SNORM,
-		un16_1 = DXGI_FORMAT_R16_UNORM,
-		f16_1 = DXGI_FORMAT_R16_FLOAT,
+		si16_1,
+		ui16_1,
+		sn16_1,
+		un16_1,
+		f16_1 ,
 
-		si8_4 = DXGI_FORMAT_R8G8B8A8_SINT,
-		ui8_4 = DXGI_FORMAT_R8G8B8A8_UINT,
-		sn8_4 = DXGI_FORMAT_R8G8B8A8_SNORM,
-		un8_4 = DXGI_FORMAT_R8G8B8A8_UNORM,
+		si8_4,
+		ui8_4,
+		sn8_4,
+		un8_4,
 
-		si8_2 = DXGI_FORMAT_R8G8_SINT,
-		ui8_2 = DXGI_FORMAT_R8G8_UINT,
-		sn8_2 = DXGI_FORMAT_R8G8_SNORM,
-		un8_2 = DXGI_FORMAT_R8G8_UNORM,
+		si8_2,
+		ui8_2,
+		sn8_2,
+		un8_2,
 
-		si8_1 = DXGI_FORMAT_R8_SINT,
-		ui8_1 = DXGI_FORMAT_R8_UINT,
-		sn8_1 = DXGI_FORMAT_R8_SNORM,
-		un8_1 = DXGI_FORMAT_R8_UNORM,
+		si8_1,
+		ui8_1,
+		sn8_1,
+		un8_1,
 
-		d16 = DXGI_FORMAT_D16_UNORM,
-		d32 = DXGI_FORMAT_D32_FLOAT,
-		d24s8 = DXGI_FORMAT_D24_UNORM_S8_UINT,
+		d16 ,
+		d32 ,
+		d24s8,
 
 		none = 0
 	};

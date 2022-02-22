@@ -1,13 +1,13 @@
 #pragma once
 #include<alya/graphics/core/vertex_stream_base.hpp>
 #include<alya/graphics/core/details/debug.hpp>
-//#include<alya/utility/windows/error.hpp>
+#include<alya/graphics/core/details/impl/dxgi_format.hpp>
 
 namespace alya::graphics::core
 {
 
 	vertex_stream_base::vertex_stream_base(
-		const std::vector<std::pair<attribute_semantic, dxgi::format>>&sem,
+		const std::vector<std::pair<attribute_semantic, details::pixel_type>>&sem,
 		const std::vector<char>&bytecode,
 		d3d11::device_ptr device, 
 		d3d11::device_context_ptr ctx
@@ -21,7 +21,7 @@ namespace alya::graphics::core
 		for (auto [s, t] : sem)
 		{
 			D3D11_INPUT_ELEMENT_DESC desc;
-			desc.Format = static_cast<DXGI_FORMAT>(t);
+			desc.Format = details::dxgi_format(t);
 			desc.SemanticName = s.name.data();
 			desc.SemanticIndex = s.index;
 			desc.InputSlot = slot++;

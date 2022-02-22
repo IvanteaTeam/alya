@@ -2,13 +2,14 @@
 #include<alya/utility/windows/com/intialize.hpp>
 #include<alya/graphics/core/details/debug.hpp>
 #include<alya/utility/windows/win32_error.hpp>
+#include<alya/graphics/core/details/impl/dxgi_format.hpp>
 
 #undef max
 
 namespace alya::graphics::core
 {
 
-	context_base::context_base(HWND hwnd, dxgi::format color, dxgi::format depth, size_t samples)
+	context_base::context_base(HWND hwnd, details::pixel_type color, details::pixel_type depth, size_t samples)
 		: current_frame_buffer(nullptr), samples(samples), color(color), depth(depth), hwnd(hwnd)
 	{
 		windows::com::initialize();
@@ -39,7 +40,7 @@ namespace alya::graphics::core
 		sd.BufferDesc.Width = 0;
 		sd.BufferDesc.Height = 0;
 		sd.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-		sd.BufferDesc.Format = static_cast<DXGI_FORMAT>(color);
+		sd.BufferDesc.Format = details::dxgi_format(color);
 		sd.BufferDesc.RefreshRate.Numerator = 60;
 		sd.BufferDesc.RefreshRate.Denominator = 0;
 		sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
@@ -68,7 +69,7 @@ namespace alya::graphics::core
 		back_buffer_ms = nullptr;
 		depth_buffer = nullptr;
 
-		ALYA_GFX_CALL(swap_chain->ResizeBuffers(3, w, h, static_cast<DXGI_FORMAT>(color), 0));
+		ALYA_GFX_CALL(swap_chain->ResizeBuffers(3, w, h, details::dxgi_format(color), 0));
 
 		windows::com::shared_ptr<ID3D11Texture2D> texture;
 
@@ -82,7 +83,7 @@ namespace alya::graphics::core
 		
 			D3D11_TEXTURE2D_DESC desc = {};
 			
-			desc.Format = static_cast<DXGI_FORMAT>(color);
+			desc.Format = details::dxgi_format(color);
 			desc.ArraySize = 1;
 			desc.BindFlags = D3D11_BIND_RENDER_TARGET;
 			desc.CPUAccessFlags = 0;
@@ -100,12 +101,12 @@ namespace alya::graphics::core
 
 		}
 
-		if(depth != dxgi::format::none)
+		if(depth != details::pixel_type::none)
 		{
 			windows::com::shared_ptr<ID3D11Texture2D> db;
 			D3D11_TEXTURE2D_DESC desc = {};
 
-			desc.Format = static_cast<DXGI_FORMAT>(depth);
+			desc.Format = details::dxgi_format(depth);
 			desc.ArraySize = 1;
 			desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 			desc.CPUAccessFlags = 0;
@@ -131,7 +132,7 @@ namespace alya::graphics::core
 			windows::com::shared_ptr<ID3D11Resource> bb, bbms;
 			back_buffer->GetResource(&bb);
 			back_buffer_ms->GetResource(&bbms);
-			ALYA_GFX_CALL(device_context->ResolveSubresource(bb.get(), 0, bbms.get(), 0, static_cast<DXGI_FORMAT>(color)));
+			ALYA_GFX_CALL(device_context->ResolveSubresource(bb.get(), 0, bbms.get(), 0, details::dxgi_format(color)));
 			device_context->Flush();
 		}
 		auto ret = swap_chain->Present(sync ? 1 : 0, 0);
