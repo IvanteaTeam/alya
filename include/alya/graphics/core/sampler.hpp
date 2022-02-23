@@ -1,31 +1,19 @@
 #pragma once
-#include<alya/graphics/core/details/d3d11/object_base.hpp>
+#include<alya/graphics/core/details/impl/d3d11_sampler.hpp>
 
-namespace alya
+namespace alya::graphics::core
 {
+	class context_base;
 
-	namespace graphics::core
+	class sampler
 	{
+	public:
+	
+		explicit sampler(context_base&);
 
-		class sampler : protected d3d11::object_base
-		{
-		public:
-
-			template<typename C>
-			sampler(C& ctx) : sampler(get_device(ctx), get_device_context(ctx)) {}
-			sampler(sampler&&) = default;
-			sampler(const sampler&) = delete;
-			sampler& operator=(sampler&&) = default;
-			sampler& operator=(const sampler&) = delete;
-
-
-
-		private:
-			sampler(d3d11::device_ptr, d3d11::device_context_ptr);
-			mutable d3d11::sampler_state_ptr state;
-			friend class context_base;
-		};
-
-	}
+	private:
+		details::d3d11_sampler impl_;
+		friend class context_base;
+	};
 
 }

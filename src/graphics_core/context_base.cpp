@@ -199,17 +199,17 @@ namespace alya::graphics::core
 
 	void context_base::bind_sampler(pixel_shader_target_t, const sampler&s, size_t slot)
 	{
-		ALYA_GFX_CALL(device_context->PSSetSamplers(slot, 1, s.state.address()));
+		ALYA_GFX_CALL(device_context->PSSetSamplers(slot, 1, s.impl_.native_handle().address()));
 	}
 
 	void context_base::bind_vertex_shader(const vertex_shader&vs)
 	{
-		ALYA_GFX_CALL(device_context->VSSetShader(vs.shader.get(), nullptr, 0));
+		ALYA_GFX_CALL(device_context->VSSetShader(vs.impl_.native_handle().get(), nullptr, 0));
 	}
 
 	void context_base::bind_pixel_shader(const pixel_shader&ps)
 	{
-		ALYA_GFX_CALL(device_context->PSSetShader(ps.shader.get(), nullptr, 0));
+		ALYA_GFX_CALL(device_context->PSSetShader(ps.impl_.native_handle().get(), nullptr, 0));
 	}
 
 	void context_base::bind_constants(vertex_shader_target_t, const buffer_base& buffer, size_t slot)

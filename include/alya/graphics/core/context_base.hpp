@@ -104,12 +104,12 @@ namespace alya::graphics::core
 
 		void resize_buffers(size_t w, size_t h);
 
-		mutable d3d11::device_ptr device;
-		mutable d3d11::device_context_ptr device_context;
+		mutable windows::com::shared_ptr<ID3D11Device> device;
+		mutable windows::com::shared_ptr<ID3D11DeviceContext> device_context;
 		windows::com::shared_ptr<IDXGIFactory> factory;
 		windows::com::shared_ptr<IDXGISwapChain> swap_chain;
-		d3d11::rtv_ptr back_buffer, back_buffer_ms;
-		d3d11::dsv_ptr depth_buffer;
+		windows::com::shared_ptr<ID3D11RenderTargetView> back_buffer, back_buffer_ms;
+		windows::com::shared_ptr<ID3D11DepthStencilView> depth_buffer;
 		//std::optional<basic_texture<render_buffer::pixel_format>> back_buffer_texture;
 		//std::optional<render_buffer> back_buffer_;
 		//std::optional<graphics::render_buffer_base> back_buffer_;
@@ -121,10 +121,12 @@ namespace alya::graphics::core
 		details::pixel_type color, depth;
 
 		friend class frame_buffer_base;
-		friend class d3d11::object_base;
 		friend class texture2d_base;
 		friend class buffer_base;
 		friend class vertex_stream_base;
+		friend class sampler;
+		friend class vertex_shader;
+		friend class pixel_shader;
 	};
 
 }

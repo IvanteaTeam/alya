@@ -1,37 +1,32 @@
 #pragma once
-#include<alya/graphics/core/details/d3d11/object_base.hpp>
+#include<alya/graphics/core/details/impl/d3d11_vertex_shader.hpp>
 #include<system_error>
 #include<vector>
 
 namespace alya::graphics::core
 {
+	class context_base;
 
-	class vertex_shader : protected d3d11::object_base
+	class vertex_shader
 	{
 	public:
 
-		template<typename C>
-		vertex_shader(const void*bytecode, size_t size, C&ctx)
-			: vertex_shader(bytecode, size, get_device(ctx), get_device_context(ctx))
-		{}
+		vertex_shader(const void*, size_t, context_base&);
 
 		class importer
 		{
 		public:
 
-			template<typename Context>
-			vertex_shader operator()(const auto&data, Context&ctx)
+			vertex_shader operator()(const auto&data, context_base&context)
 			{
 				auto data_begin = reinterpret_cast<const char*>(&*std::begin(data));
 				auto data_end = reinterpret_cast<const char*>(&*--std::end(data) + 1);
-				return vertex_shader(data_begin, data_end - data_begin, ctx);
+				return vertex_shader(data_begin, data_end - data_begin, context);
 			}
 		};
 
 	private:
-		vertex_shader(const void*, size_t, d3d11::device_ptr, d3d11::device_context_ptr);
-		mutable d3d11::vertex_shader_ptr shader;
-		std::vector<char> bytecode;
+		details::d3d11_vertex_shader impl_;
 		friend class context_base;
 		friend class vertex_stream_base;
 	};

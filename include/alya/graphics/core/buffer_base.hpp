@@ -1,8 +1,6 @@
 #pragma once
-#include<alya/graphics/core/details/d3d11/object_base.hpp>
 #include<alya/graphics/core/memory_qualifier.hpp>
 #include<alya/utility/bitmask.hpp>
-//#include<alya/graphics/details/d3d11/map_enum.hpp>
 #include<memory>
 #include<alya/graphics/core/details/impl/d3d11_buffer.hpp>
 
