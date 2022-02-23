@@ -1,51 +1,52 @@
 #pragma once
+#include<alya/graphics/core/attribute_stream.hpp>
 #include<alya/graphics/core/vertex_stream_base.hpp>
 
 namespace alya::graphics::core
 {
 
+	
+	struct attribute_semantic
+	{
+		const char* name;
+		size_t index;
+	};
 
 	template<typename...T>
 	class vertex_stream : public vertex_stream_base
 	{
 	public:
 
-		template<typename S, typename C>
-		vertex_stream(const std::array<attribute_semantic, sizeof...(T)>&sem, const S& shader, C& ctx)
-			: vertex_stream_base{make_semantic(sem), shader, ctx } 
-		{
-
-		}
-
+		vertex_stream(const std::array<attribute_semantic, sizeof...(T)>&sematics, const vertex_shader&shader, context_base&context)
+			: vertex_stream(std::make_index_sequence<sizeof...(T)>{}, sematics, shader, context)
+		{}
 
 		template<size_t I>
-		void attach(attribute_stream<std::remove_reference_t<std::remove_all_extents_t<decltype(std::get<I>(std::declval<std::tuple<T...>&>()))>>> a)
+		void attach(attribute_stream<std::tuple_element_t<I, std::tuple<T...>>> a)
 		{
-			using R = std::remove_reference_t<std::remove_all_extents_t<decltype(std::get<I>(std::declval<std::tuple<T...>&>()))>>;
-			vertex_stream_base::set(I, a);
+			attach(std::move(a), I);
 		}
 		
 		template<size_t I, typename U>
-		void attach(attribute_stream<U> a)
+		void attach(attribute_stream<U> a) requires compatible_pixel<pixel_traits<U>, pixel_traits<std::tuple_element_t<I, std::tuple<T...>>>>
 		{
-			using R = std::remove_reference_t<std::remove_all_extents_t<decltype(std::get<I>(std::declval<std::tuple<T...>&>()))>>;
-			static_assert(compatible_pixel<pixel_traits<R>, pixel_traits<U>>);
-			vertex_stream_base::set(I, a);
+			attach(std::move(a), I);
 		}
-
 
 	private:
 
-		static inline std::vector<std::pair<attribute_semantic, details::pixel_type>> make_semantic(const std::array<attribute_semantic, sizeof...(T)>&sem)
+		void attach(attribute_stream_base&& stream, size_t index)
 		{
-			return ([&]<size_t...I>(std::index_sequence<I...>) {
-				std::array<details::pixel_type, sizeof...(T)> arr = { details::make_pixel_type<T>()... };
-					
-
-				return std::vector<std::pair<attribute_semantic, details::pixel_type>>{std::pair{ sem[I], arr[I] }... };
-			})(std::make_index_sequence<sizeof...(T)>{});
+			attributes_.at(index) = std::move(stream);
 		}
 
+		template<size_t...I>
+		vertex_stream(std::index_sequence<I...>, const std::array<attribute_semantic, sizeof...(I)>&semantic, const vertex_shader&shader, context_base&context)
+			: vertex_stream_base({ details::attribute_signature{details::make_pixel_type<std::tuple_element_t<I, std::tuple<T...>>>(), semantic[I].name, semantic[I].index}... }, shader, context)
+		{}
+
+		std::array<attribute_stream_base, sizeof...(T)> attributes_;
+		friend class context_base;
 	};
 
 }

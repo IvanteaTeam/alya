@@ -186,10 +186,10 @@ namespace alya::graphics::core
 		ALYA_GFX_CALL(device_context->ClearState());
 	}
 
-	void context_base::bind_vertices(const vertex_stream_base&vs)
+	void context_base::bind_vertices(const vertex_stream_base&vs, const ID3D11Buffer*const*buffers,const uint32_t*offsets, const uint32_t*strides, size_t count)
 	{
-		ALYA_GFX_CALL(device_context->IASetInputLayout(vs.layout.get()));
-		vs.bind();
+		ALYA_GFX_CALL(device_context->IASetInputLayout(vs.input_layout_.native_handle().get()));
+		ALYA_GFX_CALL(device_context->IASetVertexBuffers(0, count, const_cast<ID3D11Buffer*const*>(buffers), strides, offsets));
 	}
 
 	void context_base::bind_vertices(std::nullopt_t)

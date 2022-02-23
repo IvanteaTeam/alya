@@ -3,7 +3,7 @@
 #include<alya/graphics/core/pixel_shader.hpp>
 #include<alya/ui/core/window_base.hpp>
 #include<alya/graphics/core/frame_buffer_base.hpp>
-#include<alya/graphics/core/vertex_stream_base.hpp>
+#include<alya/graphics/core/vertex_stream.hpp>
 #include<alya/graphics/core/sampler.hpp>
 #include<alya/graphics/core/depth_stencil_state.hpp>
 #include<alya/graphics/core/texture_view.hpp>
@@ -35,7 +35,20 @@ namespace alya::graphics::core
 		void bind_frame_buffer(default_frame_buffer_t);
 		void bind_frame_buffer(std::nullopt_t);
 
-		void bind_vertices(const vertex_stream_base&vs);
+		template<typename...T>
+		void bind_vertices(const vertex_stream<T...>& vertices)
+		{
+			constexpr size_t size = sizeof...(T);
+			std::array<uint32_t, size> offsets, strides;
+			std::array<const ID3D11Buffer*, size> buffers;
+			for (size_t i = 0; i < vertices.attributes_.size(); i++)
+			{
+				offsets[i] = vertices.attributes_[i].offset_;
+				strides[i] = vertices.attributes_[i].stride_;
+				buffers[i] = vertices.attributes_[i].buffer_.get();
+			}
+			bind_vertices(vertices, buffers.data(), offsets.data(), strides.data(), vertices.attributes_.size());
+		}
 		void bind_vertices(std::nullopt_t);
 
 		template<typename T, memory_qualifier Q, buffer_binding B>
@@ -84,6 +97,8 @@ namespace alya::graphics::core
 
 	private:
 
+		void bind_vertices(const vertex_stream_base&, const ID3D11Buffer*const* buffers, const uint32_t*offsets, const uint32_t*strides, size_t count);
+
 		void bind_constants(vertex_shader_target_t, const buffer_base&buffer, size_t slot);
 		void bind_constants(pixel_shader_target_t, const buffer_base&buffer, size_t slot);
 
@@ -109,6 +124,7 @@ namespace alya::graphics::core
 		friend class d3d11::object_base;
 		friend class texture2d_base;
 		friend class buffer_base;
+		friend class vertex_stream_base;
 	};
 
 }

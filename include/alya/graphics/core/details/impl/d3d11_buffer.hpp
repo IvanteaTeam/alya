@@ -16,6 +16,8 @@ namespace alya::graphics::core::details
 	{
 	public:
 
+		using native_handle_type = windows::com::shared_ptr<ID3D11Buffer>;
+
 		d3d11_buffer(const void* init, size_t size, memory_qualifier memory, buffer_binding bind, windows::com::shared_ptr<ID3D11Device>device);
 		d3d11_buffer(const d3d11_buffer&) = delete;
 		d3d11_buffer(d3d11_buffer&&) = default;
@@ -35,7 +37,7 @@ namespace alya::graphics::core::details
 
 		std::unique_ptr<void, unmap_t> map(map_type);
 
-		windows::com::shared_ptr<ID3D11Buffer> native_handle()const noexcept
+		native_handle_type native_handle()const noexcept
 		{
 			return impl_;
 		}

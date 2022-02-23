@@ -8,14 +8,22 @@ namespace alya::graphics::core
 	{
 	public:
 		attribute_stream_base() = default;
+		attribute_stream_base(const attribute_stream_base&) = default;
+		attribute_stream_base(attribute_stream_base&&) = default;
+		attribute_stream_base& operator=(const attribute_stream_base&) = default;
+		attribute_stream_base& operator=(attribute_stream_base&&) = default;
+	
 	protected:
-		inline attribute_stream_base(const buffer_base& buffer, size_t offset, size_t stride)
-			: buffer(buffer.impl_.native_handle()), offset(offset), stride(stride)
+		
+		attribute_stream_base(const buffer_base& buffer, size_t offset, size_t stride) noexcept :  
+			buffer_(buffer.impl_.native_handle()), offset_(offset), stride_(stride)
 		{}
-		mutable d3d11::buffer_ptr buffer;
-		size_t offset, stride;
+	private:
+
+		details::d3d11_buffer::native_handle_type buffer_;
+		size_t offset_, stride_;
 		friend class vertex_stream_base;
-		//friend class context;
+		friend class context_base;
 	};
 
 }
