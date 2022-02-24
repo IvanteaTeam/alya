@@ -1,6 +1,8 @@
 #pragma once
+#include<alya/graphics/core/context_base.hpp>
 #include<alya/graphics/core/attribute_stream.hpp>
-#include<alya/graphics/core/vertex_stream_base.hpp>
+#include<alya/graphics/core/details/impl/d3d11_vertex_stream.hpp>
+#include<alya/graphics/core/vertex_shader.hpp>
 
 namespace alya::graphics::core
 {
@@ -13,7 +15,7 @@ namespace alya::graphics::core
 	};
 
 	template<typename...T>
-	class vertex_stream : public vertex_stream_base
+	class vertex_stream// : public vertex_stream_base
 	{
 	public:
 
@@ -37,16 +39,18 @@ namespace alya::graphics::core
 
 		void attach(attribute_stream_base&& stream, size_t index)
 		{
-			attributes_.at(index) = std::move(stream);
+			impl_.attach_attribute_stream(stream.buffer_, stream.offset_, stream.stride_, index);
 		}
 
 		template<size_t...I>
 		vertex_stream(std::index_sequence<I...>, const std::array<attribute_semantic, sizeof...(I)>&semantic, const vertex_shader&shader, context_base&context)
-			: vertex_stream_base({ details::attribute_signature{details::make_pixel_type<std::tuple_element_t<I, std::tuple<T...>>>(), semantic[I].name, semantic[I].index}... }, shader, context)
+			: impl_({ details::attribute_signature{details::make_pixel_type<std::tuple_element_t<I, std::tuple<T...>>>(), semantic[I].name, semantic[I].index }... }, shader.impl_, context.impl_.device().native_handle())
 		{}
 
-		std::array<attribute_stream_base, sizeof...(T)> attributes_;
-		friend class context_base;
+		details::d3d11_vertex_stream<sizeof...(T)> impl_;
+
+		template<typename, typename, size_t>
+		friend class basic_context;
 	};
 
 }

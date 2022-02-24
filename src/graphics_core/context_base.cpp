@@ -8,7 +8,7 @@
 
 namespace alya::graphics::core
 {
-
+	/*
 	context_base::context_base(HWND hwnd, details::pixel_type color, details::pixel_type depth, size_t samples)
 		: samples(samples), color(color), depth(depth), hwnd(hwnd)
 	{
@@ -25,173 +25,34 @@ namespace alya::graphics::core
 
 		ALYA_GFX_CALL(D3D11CreateDevice(nullptr, driver, nullptr, flags, &feature, 1, D3D11_SDK_VERSION, &device, nullptr, &device_context));
 
-
-		//ALYA_WIN32_CALL(ALYA_GFX_CALL(CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&factory))));
-
-		{
-			windows::com::shared_ptr<IDXGIDevice> d = device.query_interface<IDXGIDevice>();
-			windows::com::shared_ptr<IDXGIAdapter> adapter;
-			d->GetParent(__uuidof(*adapter.get()), reinterpret_cast<void**>(&adapter));
-			adapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&factory));
-		}
-
-		DXGI_SWAP_CHAIN_DESC sd = {};
-		sd.BufferCount = 3;
-		sd.BufferDesc.Width = 0;
-		sd.BufferDesc.Height = 0;
-		sd.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-		sd.BufferDesc.Format = details::dxgi_format(color);
-		sd.BufferDesc.RefreshRate.Numerator = 60;
-		sd.BufferDesc.RefreshRate.Denominator = 0;
-		sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		sd.OutputWindow = hwnd;
-		sd.SampleDesc.Count = 1;
-		sd.SampleDesc.Quality = 0;
-		sd.Windowed = true;
-
-
-		ALYA_GFX_CALL(factory->CreateSwapChain(device.get(), &sd, &swap_chain));
-
-		RECT ca_size;
-		GetClientRect(hwnd, &ca_size);
-		width = ca_size.right - ca_size.left;
-		height = ca_size.bottom - ca_size.top;
-		resize_buffers(ca_size.right - ca_size.left, ca_size.bottom - ca_size.top);
-		
-	}
-
-	void context_base::resize_buffers(size_t w, size_t h)
-	{
-		w = std::max(w, 8ull);
-		h = std::max(h, 8ull);
-
-		back_buffer = nullptr;
-		back_buffer_ms = nullptr;
-		depth_buffer = nullptr;
-
-		ALYA_GFX_CALL(swap_chain->ResizeBuffers(3, w, h, details::dxgi_format(color), 0));
-
-		windows::com::shared_ptr<ID3D11Texture2D> texture;
-
-		ALYA_GFX_CALL(swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&texture)));
-
-		ALYA_GFX_CALL(device->CreateRenderTargetView(texture.get(), nullptr, &back_buffer));
-
-
-		if (samples > 1){
-			windows::com::shared_ptr<ID3D11Texture2D> ms;
-		
-			D3D11_TEXTURE2D_DESC desc = {};
-			
-			desc.Format = details::dxgi_format(color);
-			desc.ArraySize = 1;
-			desc.BindFlags = D3D11_BIND_RENDER_TARGET;
-			desc.CPUAccessFlags = 0;
-			desc.MiscFlags = 0;
-			desc.SampleDesc.Count = samples;
-			desc.SampleDesc.Quality = 0;
-			desc.Height = h;
-			desc.Width = w;
-			desc.MipLevels = 1;
-			desc.Usage = D3D11_USAGE_DEFAULT;
-			
-			ALYA_GFX_CALL(device->CreateTexture2D(&desc, nullptr, &ms));
-
-			ALYA_GFX_CALL(device->CreateRenderTargetView(ms.get(), nullptr, &back_buffer_ms));
-
-		}
-
-		if(depth != details::pixel_type::none)
-		{
-			windows::com::shared_ptr<ID3D11Texture2D> db;
-			D3D11_TEXTURE2D_DESC desc = {};
-
-			desc.Format = details::dxgi_format(depth);
-			desc.ArraySize = 1;
-			desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-			desc.CPUAccessFlags = 0;
-			desc.MiscFlags = 0;
-			desc.SampleDesc.Count = samples;
-			desc.SampleDesc.Quality = 0;
-			desc.Height = h;
-			desc.Width = w;
-			desc.MipLevels = 1;
-			desc.Usage = D3D11_USAGE_DEFAULT;
-
-			ALYA_GFX_CALL(device->CreateTexture2D(&desc, nullptr, &db));
-
-			ALYA_GFX_CALL(device->CreateDepthStencilView(db.get(), nullptr, &depth_buffer));
-		}
+		default_frame_buffer_.emplace(details::d3d11_default_frame_buffer(hwnd, color, depth, samples, device));
 
 	}
-
 	void context_base::present(bool sync)
 	{
-		if (back_buffer_ms)
-		{
-			windows::com::shared_ptr<ID3D11Resource> bb, bbms;
-			back_buffer->GetResource(&bb);
-			back_buffer_ms->GetResource(&bbms);
-			ALYA_GFX_CALL(device_context->ResolveSubresource(bb.get(), 0, bbms.get(), 0, details::dxgi_format(color)));
-			device_context->Flush();
-		}
-		auto ret = swap_chain->Present(sync ? 1 : 0, 0);
 
-		if (ret != S_OK && ret != DXGI_STATUS_OCCLUDED)
-		{
-			//ALYA_WIN32_CALL(ret);
-			throw std::system_error{ windows::make_error_code(ret) };
-		}
-		else
-		{
-			RECT ca;
-
-			GetClientRect(hwnd, &ca);
-
-			size_t w = ca.right - ca.left, h = ca.bottom - ca.top;
-
-			if (!(w == width && h == height))
-			{
-				width = w;
-				height = h;
-				resize_buffers(w, h);
-			}
-		}
+		default_frame_buffer_->present(sync);
 
 	}
 	
-	void context_base::bind_frame_buffer(frame_buffer_base& fb)
+	void context_base::bind_frame_buffer(details::d3d11_frame_buffer& frame_buffer)
 	{
 		std::array<ID3D11RenderTargetView*, 8> rtvs{};
-
-		std::transform(fb.render_target_views_.begin(), fb.render_target_views_.end(), rtvs.begin(), [](auto& ptr) { return ptr.get(); });
-
-		ALYA_GFX_CALL(device_context->OMSetRenderTargets(8, rtvs.data(), fb.depth_stencil_view_.get()));
-	}
-
-	void context_base::bind_frame_buffer(default_frame_buffer_t)
-	{
-		std::array<ID3D11RenderTargetView*, 8> rtvs{};
-		rtvs[0] = back_buffer_ms ? back_buffer_ms.get() : back_buffer.get();
-		ALYA_GFX_CALL(device_context->OMSetRenderTargets(rtvs.size(), rtvs.data(), depth_buffer ? depth_buffer.get() : nullptr));
-	}
-
-	void context_base::bind_frame_buffer(std::nullopt_t)
-	{
-		ALYA_GFX_CALL(device_context->OMSetRenderTargets(0, nullptr, nullptr));
+		std::transform(frame_buffer.render_buffers_.begin(), frame_buffer.render_buffers_.end(), rtvs.begin(), [](auto& view) { return view.get(); });
+		ALYA_GFX_CALL(device_context->OMSetRenderTargets(rtvs.size(), rtvs.data(), frame_buffer.depth_stencil_buffer_.get()));
 	}
 
 	void context_base::clear()
 	{
 		ALYA_GFX_CALL(device_context->ClearState());
 	}
-
+	/*
 	void context_base::bind_vertices(const vertex_stream_base&vs, const ID3D11Buffer*const*buffers,const uint32_t*offsets, const uint32_t*strides, size_t count)
 	{
 		ALYA_GFX_CALL(device_context->IASetInputLayout(vs.input_layout_.native_handle().get()));
 		ALYA_GFX_CALL(device_context->IASetVertexBuffers(0, count, const_cast<ID3D11Buffer*const*>(buffers), strides, offsets));
 	}
-
+	*//*
 	void context_base::bind_vertices(std::nullopt_t)
 	{
 		ALYA_GFX_CALL(device_context->IASetInputLayout(nullptr));
@@ -262,14 +123,12 @@ namespace alya::graphics::core
 
 	void context_base::clear_depth(float d)
 	{
-		if (depth_buffer)
-			device_context->ClearDepthStencilView(depth_buffer.get(), D3D11_CLEAR_DEPTH, d, 0);
+		default_frame_buffer_->clear_depth(d);
 	}
 
 	void context_base::clear_color(float r, float g, float b, float a)
 	{
-		float color[] = { r, g, b, a };
-		device_context->ClearRenderTargetView(back_buffer_ms ? back_buffer_ms.get() : back_buffer.get(), color);
+		default_frame_buffer_->clear_color(r, g, b, a, 0);
 	}
 
 	void context_base::set_depth_stencil_state(const depth_stencil_state&s)
@@ -294,6 +153,6 @@ namespace alya::graphics::core
 	void context_base::bind_texture(pixel_shader_target_t, const texture_view& view, size_t slot)
 	{
 		device_context->PSSetShaderResources(slot, 1, view.impl_.native_handle().address());
-	}
+	}*/
 
 }

@@ -23,7 +23,7 @@ namespace alya::graphics::core
 			pixel,
 			memory,
 			bind,
-			context.device
+			context.impl_.device().native_handle()
 		)
 	{}
 
@@ -44,7 +44,7 @@ namespace alya::graphics::core
 			pixel, 
 			memory,
 			bind, 
-			context.device
+			context.impl_.device().native_handle()
 		)
 	{}
 

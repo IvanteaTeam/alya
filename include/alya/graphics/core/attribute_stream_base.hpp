@@ -22,7 +22,8 @@ namespace alya::graphics::core
 
 		details::d3d11_buffer::native_handle_type buffer_;
 		size_t offset_, stride_;
-		friend class vertex_stream_base;
+		template<typename...T>
+		friend class vertex_stream;
 		friend class context_base;
 	};
 

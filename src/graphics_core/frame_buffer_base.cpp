@@ -3,7 +3,7 @@
 
 namespace alya::graphics::core
 {
-	
+	/*
 	void frame_buffer_base::clear_color(float r, float g, float b, float a, size_t index)
 	{
 		auto view = render_target_views_.at(index);
@@ -29,5 +29,5 @@ namespace alya::graphics::core
 			context->ClearDepthStencilView(depth_stencil_view_.get(), D3D11_CLEAR_DEPTH, v, 0);
 		}
 	}
-
+	*/
 }

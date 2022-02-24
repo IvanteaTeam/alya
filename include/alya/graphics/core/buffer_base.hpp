@@ -58,7 +58,8 @@ namespace alya::graphics::core
 
 		details::d3d11_buffer impl_;
 
-		friend class context_base;
+		template<typename, typename, size_t>
+		friend class basic_context;
 		friend class attribute_stream_base;
 	};
 

@@ -6,7 +6,7 @@
 namespace alya::graphics::core
 {
 	vertex_shader::vertex_shader(const void*data, size_t size, context_base&context)
-		: impl_(data, size, context.device)
+		: impl_(data, size, context.impl_.device().native_handle())
 	{}
 
 }

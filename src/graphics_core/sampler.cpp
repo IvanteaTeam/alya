@@ -5,7 +5,7 @@ namespace alya::graphics::core
 {
 
 	sampler::sampler(context_base&context)
-		: impl_(context.device)
+		: impl_(context.impl_.device().native_handle())
 	{}
 
 }

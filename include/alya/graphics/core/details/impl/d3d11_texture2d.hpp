@@ -43,7 +43,7 @@ namespace alya::graphics::core::details
 		);
 
 		d3d11_texture2d(const d3d11_texture2d&) = delete;
-		d3d11_texture2d(d3d11_texture2d&&) = delete;
+		d3d11_texture2d(d3d11_texture2d&&) = default;
 		d3d11_texture2d& operator=(const d3d11_texture2d&) = delete;
 		d3d11_texture2d& operator=(d3d11_texture2d&&) = default;
 

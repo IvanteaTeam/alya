@@ -27,7 +27,8 @@ namespace alya::graphics::core
 
 	private:
 		details::d3d11_pixel_shader impl_;
-		friend class context_base;
+		template<typename, typename, size_t>
+		friend class basic_context;
 	};
 
 }

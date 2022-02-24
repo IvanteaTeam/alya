@@ -27,8 +27,10 @@ namespace alya::graphics::core
 
 	private:
 		details::d3d11_vertex_shader impl_;
-		friend class context_base;
-		friend class vertex_stream_base;
+		template<typename, typename, size_t>
+		friend class basic_context;
+		template<typename...T>
+		friend class vertex_stream;
 	};
 
 }
