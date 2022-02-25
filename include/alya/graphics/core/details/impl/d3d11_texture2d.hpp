@@ -12,6 +12,8 @@ struct ID3D11ShaderResourceView;
 namespace alya::graphics::core::details
 {
 
+	class d3d11_context;
+
 	class d3d11_texture2d
 	{
 	public:
@@ -27,7 +29,19 @@ namespace alya::graphics::core::details
 			pixel_type pixel,
 			memory_qualifier memory,
 			texture_binding bind,
-			windows::com::shared_ptr<ID3D11Device> device
+			windows::com::shared_ptr<ID3D11Device>
+		);
+
+		d3d11_texture2d(
+			size_t width,
+			size_t height,
+			size_t mipmaps,
+			size_t layers,
+			size_t samples,
+			pixel_type pixel,
+			memory_qualifier memory,
+			texture_binding bind,
+			d3d11_context&
 		);
 
 		d3d11_texture2d(
@@ -39,7 +53,7 @@ namespace alya::graphics::core::details
 			pixel_type pixel,
 			memory_qualifier memory,
 			texture_binding bind,
-			windows::com::shared_ptr<ID3D11Device>device
+			d3d11_context&
 		);
 
 		d3d11_texture2d(const d3d11_texture2d&) = delete;

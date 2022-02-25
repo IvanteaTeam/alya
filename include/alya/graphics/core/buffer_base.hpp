@@ -3,6 +3,7 @@
 #include<alya/utility/bitmask.hpp>
 #include<memory>
 #include<alya/graphics/core/details/impl/d3d11_buffer.hpp>
+#include<alya/graphics/core/context_base.hpp>
 
 namespace alya::graphics::core
 {
@@ -40,7 +41,9 @@ namespace alya::graphics::core
 	{
 	public:
 
-		buffer_base(const void*, size_t, memory_qualifier, buffer_binding, context_base&);
+		buffer_base(const void*init, size_t size, memory_qualifier memory, buffer_binding bind, context_base& context)
+			: impl_(init, size, memory, bind, context.impl_)
+		{}
 
 		size_t size()const noexcept
 		{

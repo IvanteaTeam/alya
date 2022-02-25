@@ -3,6 +3,7 @@
 #include<alya/graphics/core/attribute_stream.hpp>
 #include<alya/graphics/core/details/impl/d3d11_vertex_stream.hpp>
 #include<alya/graphics/core/vertex_shader.hpp>
+#include<alya/graphics/core/context_base.hpp>
 
 namespace alya::graphics::core
 {
@@ -44,7 +45,7 @@ namespace alya::graphics::core
 
 		template<size_t...I>
 		vertex_stream(std::index_sequence<I...>, const std::array<attribute_semantic, sizeof...(I)>&semantic, const vertex_shader&shader, context_base&context)
-			: impl_({ details::attribute_signature{details::make_pixel_type<std::tuple_element_t<I, std::tuple<T...>>>(), semantic[I].name, semantic[I].index }... }, shader.impl_, context.impl_.device().native_handle())
+			: impl_({ details::attribute_signature{details::make_pixel_type<std::tuple_element_t<I, std::tuple<T...>>>(), semantic[I].name, semantic[I].index }... }, shader.impl_, context.impl_)
 		{}
 
 		details::d3d11_vertex_stream<sizeof...(T)> impl_;

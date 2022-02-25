@@ -1,11 +1,12 @@
 #include<alya/graphics/core/details/impl/d3d11_sampler.hpp>
+#include<alya/graphics/core/details/impl/d3d11_context.hpp>
 #include<alya/graphics/core/details/debug.hpp>
 #include<d3d11.h>
 
 namespace alya::graphics::core::details
 {
 
-	d3d11_sampler::d3d11_sampler(windows::com::shared_ptr<ID3D11Device> device)
+	d3d11_sampler::d3d11_sampler(d3d11_context&context)
 	{
 		D3D11_SAMPLER_DESC desc = {};
 		desc.Filter = //D3D11_FILTER_MIN_MAG_MIP_POINT;
@@ -22,7 +23,7 @@ namespace alya::graphics::core::details
 		desc.MaxLOD = D3D11_FLOAT32_MAX;
 
 
-		ALYA_GFX_CALL(device->CreateSamplerState(&desc, &impl_));
+		ALYA_GFX_CALL(context.device().native_handle()->CreateSamplerState(&desc, &impl_));
 	}
 
 }

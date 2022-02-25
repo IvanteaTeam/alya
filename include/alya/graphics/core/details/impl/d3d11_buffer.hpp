@@ -12,13 +12,15 @@ struct ID3D11Buffer;
 namespace alya::graphics::core::details
 {
 	
+	class d3d11_context;
+
 	class d3d11_buffer
 	{
 	public:
 
 		using native_handle_type = windows::com::shared_ptr<ID3D11Buffer>;
 
-		d3d11_buffer(const void* init, size_t size, memory_qualifier memory, buffer_binding bind, windows::com::shared_ptr<ID3D11Device>device);
+		d3d11_buffer(const void* init, size_t size, memory_qualifier memory, buffer_binding bind, d3d11_context&);
 		d3d11_buffer(const d3d11_buffer&) = delete;
 		d3d11_buffer(d3d11_buffer&&) = default;
 		d3d11_buffer& operator=(const d3d11_buffer&) = delete;

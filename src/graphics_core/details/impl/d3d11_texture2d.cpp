@@ -3,6 +3,7 @@
 #include<alya/graphics/core/details/impl/d3d11_usage.hpp>
 #include<alya/graphics/core/details/impl/dxgi_format.hpp>
 #include<alya/graphics/core/details/debug.hpp>
+#include<alya/graphics/core/details/impl/d3d11_context.hpp>
 
 namespace alya::graphics::core::details
 {
@@ -15,7 +16,7 @@ namespace alya::graphics::core::details
 		pixel_type pixel,
 		memory_qualifier memory,
 		texture_binding bind,
-		windows::com::shared_ptr<ID3D11Device> device
+		windows::com::shared_ptr<ID3D11Device>device
 	) : 
 		width_(width),
 		height_(height),
@@ -40,6 +41,30 @@ namespace alya::graphics::core::details
 		ALYA_GFX_CALL(device->CreateTexture2D(&desc, nullptr, &impl_));
 
 	}
+
+	d3d11_texture2d::d3d11_texture2d(
+		size_t width,
+		size_t height,
+		size_t mipmaps,
+		size_t layers,
+		size_t samples,
+		pixel_type pixel,
+		memory_qualifier memory,
+		texture_binding bind,
+		d3d11_context&context
+	) : 
+		d3d11_texture2d(
+			width,
+			height,
+			mipmaps,
+			layers,
+			samples,
+			pixel,
+			memory,
+			bind,
+			context.device().native_handle()
+		)
+	{}
 	
 	d3d11_texture2d::d3d11_texture2d(
 		size_t width,
@@ -50,7 +75,7 @@ namespace alya::graphics::core::details
 		pixel_type pixel,
 		memory_qualifier memory,
 		texture_binding bind,
-		windows::com::shared_ptr<ID3D11Device>device
+		d3d11_context&context
 	) : 
 		width_(width),
 		height_(height),
@@ -85,11 +110,11 @@ namespace alya::graphics::core::details
 			}
 		}
 
-		ALYA_GFX_CALL(device->CreateTexture2D(&desc, init ? data : nullptr, &impl_));
+		ALYA_GFX_CALL(context.device().native_handle()->CreateTexture2D(&desc, init ? data : nullptr, &impl_));
 
 		if (mipmaps == 0)
 		{
-			ALYA_GFX_CALL(device->CreateShaderResourceView(impl_.get(), nullptr, &generate_mipmaps_view_));
+			ALYA_GFX_CALL(context.device().native_handle()->CreateShaderResourceView(impl_.get(), nullptr, &generate_mipmaps_view_));
 			size_t d = width > height ? width : height;
 			while (d)
 			{

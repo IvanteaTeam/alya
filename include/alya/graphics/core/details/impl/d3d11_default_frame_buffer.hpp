@@ -9,6 +9,8 @@ struct ID3D11Device;
 namespace alya::graphics::core::details
 {
 
+	class d3d11_context;
+
 	class d3d11_default_frame_buffer : public d3d11_frame_buffer
 	{
 	public:

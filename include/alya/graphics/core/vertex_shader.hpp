@@ -1,5 +1,5 @@
 #pragma once
-#include<alya/graphics/core/details/impl/d3d11_vertex_shader.hpp>
+#include<alya/graphics/core/context_base.hpp>
 #include<system_error>
 #include<vector>
 
@@ -11,7 +11,9 @@ namespace alya::graphics::core
 	{
 	public:
 
-		vertex_shader(const void*, size_t, context_base&);
+		vertex_shader(const void*bytecode, size_t size, context_base&context)
+			: impl_(bytecode, size, context.impl_)
+		{}
 
 		class importer
 		{

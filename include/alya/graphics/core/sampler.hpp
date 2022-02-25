@@ -1,5 +1,6 @@
 #pragma once
 #include<alya/graphics/core/details/impl/d3d11_sampler.hpp>
+#include<alya/graphics/core/context_base.hpp>
 
 namespace alya::graphics::core
 {
@@ -9,7 +10,9 @@ namespace alya::graphics::core
 	{
 	public:
 	
-		explicit sampler(context_base&);
+		explicit sampler(context_base&context)
+			: impl_(context.impl_)
+		{}
 
 	private:
 		details::d3d11_sampler impl_;

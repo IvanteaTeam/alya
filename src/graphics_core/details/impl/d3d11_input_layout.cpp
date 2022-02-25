@@ -1,5 +1,6 @@
 #include<alya/graphics/core/details/impl/d3d11_input_layout.hpp>
 #include<alya/graphics/core/details/impl/dxgi_format.hpp>
+#include<alya/graphics/core/details/impl/d3d11_context.hpp>
 #include<alya/graphics/core/details/debug.hpp>
 #include<d3d11.h>
 #include<vector>
@@ -7,7 +8,7 @@
 namespace alya::graphics::core::details
 {
 
-	d3d11_input_layout::d3d11_input_layout(std::initializer_list<attribute_signature>signatures, const void* bytecode, size_t bytecode_size, windows::com::shared_ptr<ID3D11Device>device)
+	d3d11_input_layout::d3d11_input_layout(std::initializer_list<attribute_signature>signatures, const void* bytecode, size_t bytecode_size, d3d11_context&context)
 	{
 		std::vector<D3D11_INPUT_ELEMENT_DESC> descs;
 
@@ -27,7 +28,7 @@ namespace alya::graphics::core::details
 
 		//_ALYA_DEBUG_REPORT(int(descs[0].Format));
 
-		ALYA_GFX_CALL(device->CreateInputLayout(descs.data(), descs.size(), bytecode, bytecode_size, &impl_));
+		ALYA_GFX_CALL(context.device().native_handle()->CreateInputLayout(descs.data(), descs.size(), bytecode, bytecode_size, &impl_));
 	}
 
 }

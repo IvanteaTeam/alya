@@ -8,6 +8,8 @@ struct ID3D11VertexShader;
 namespace alya::graphics::core::details
 {
 
+	class d3d11_context;
+
 	class d3d11_vertex_shader
 	{
 	public:
@@ -15,7 +17,7 @@ namespace alya::graphics::core::details
 		using native_handle_type = windows::com::shared_ptr<ID3D11VertexShader>;
 		using bytecode_type = std::vector<char>;
 
-		d3d11_vertex_shader(const void*bytecode, size_t size, windows::com::shared_ptr<ID3D11Device>device);
+		d3d11_vertex_shader(const void*bytecode, size_t size, d3d11_context&);
 		d3d11_vertex_shader(const d3d11_vertex_shader&) = delete;
 		d3d11_vertex_shader(d3d11_vertex_shader&&) = default;
 		d3d11_vertex_shader& operator=(const d3d11_vertex_shader&) = delete;

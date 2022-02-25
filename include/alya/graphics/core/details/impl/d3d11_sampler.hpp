@@ -6,6 +6,7 @@ struct ID3D11SamplerState;
 
 namespace alya::graphics::core::details
 {
+	class d3d11_context;
 
 	class d3d11_sampler
 	{
@@ -13,7 +14,7 @@ namespace alya::graphics::core::details
 
 		using native_handle_type = windows::com::shared_ptr<ID3D11SamplerState>;
 
-		explicit d3d11_sampler(windows::com::shared_ptr<ID3D11Device>);
+		explicit d3d11_sampler(d3d11_context&);
 
 		d3d11_sampler(const d3d11_sampler&) = delete;
 		d3d11_sampler(d3d11_sampler&&) = default;

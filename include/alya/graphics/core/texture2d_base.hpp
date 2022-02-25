@@ -6,6 +6,7 @@
 #include<vector>
 #include<alya/utility/bitmask.hpp>
 #include<alya/graphics/core/details/impl/d3d11_texture2d.hpp>
+#include<alya/graphics/core/context_base.hpp>
 
 namespace alya::graphics::core
 {
@@ -34,7 +35,8 @@ namespace alya::graphics::core
 			memory_qualifier memory,
 			texture_binding bind,
 			context_base&context
-		);
+		) : impl_(width, height, mipmaps, 1, samples, pixel, memory, bind, context.impl_)
+		{}
 
 		texture2d_base(
 			size_t width,
@@ -45,7 +47,8 @@ namespace alya::graphics::core
 			memory_qualifier memory,
 			texture_binding bind,
 			context_base&context
-		);
+		) : impl_(width, height, mipmaps, 1, init, pixel, memory, bind, context.impl_)
+		{}
 
 		texture2d_base(
 			size_t width,
@@ -54,7 +57,8 @@ namespace alya::graphics::core
 			memory_qualifier memory,
 			texture_binding bind,
 			context_base&context
-		);
+		) : impl_(width, height, 0, 1, nullptr, pixel, memory, bind, context.impl_)
+		{}
 
 		size_t mipmaps()const noexcept
 		{

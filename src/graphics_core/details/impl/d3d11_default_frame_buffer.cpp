@@ -3,6 +3,7 @@
 #include<alya/graphics/core/details/impl/d3d11_render_target_view.hpp>
 #include<alya/graphics/core/details/impl/d3d11_depth_stencil_view.hpp>
 #include<alya/graphics/core/details/impl/dxgi_format.hpp>
+#include<alya/graphics/core/details/impl/d3d11_context.hpp>
 #include<alya/graphics/core/details/debug.hpp>
 #include<d3d11.h>
 
@@ -14,7 +15,7 @@ namespace alya::graphics::core::details
 		pixel_type back_buffer_pixel, 
 		pixel_type depth_buffer_pixel, 
 		size_t samples,
-		windows::com::shared_ptr<ID3D11Device> device
+		windows::com::shared_ptr<ID3D11Device>device
 	) : 
 		swap_chain_(window, back_buffer_pixel, 3, device.query_interface<IDXGIDevice>()),
 		samples_(samples),
