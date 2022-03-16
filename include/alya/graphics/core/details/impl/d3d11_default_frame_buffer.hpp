@@ -4,8 +4,6 @@
 #include<alya/graphics/core/details/impl/d3d11_texture2d_array.hpp>
 #include<optional>
 
-struct ID3D11Device;
-
 namespace alya::graphics::core::details
 {
 

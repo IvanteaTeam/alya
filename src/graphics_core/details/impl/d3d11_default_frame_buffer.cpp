@@ -3,7 +3,6 @@
 #include<alya/graphics/core/details/impl/d3d11_render_target_view.hpp>
 #include<alya/graphics/core/details/impl/d3d11_depth_stencil_view.hpp>
 #include<alya/graphics/core/details/impl/dxgi_format.hpp>
-#include<alya/graphics/core/details/impl/d3d11_context.hpp>
 #include<alya/graphics/core/details/debug.hpp>
 #include<d3d11.h>
 

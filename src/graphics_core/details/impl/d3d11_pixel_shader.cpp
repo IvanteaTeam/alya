@@ -1,5 +1,4 @@
 #include<alya/graphics/core/details/impl/d3d11_pixel_shader.hpp>
-#include<alya/graphics/core/details/impl/d3d11_context.hpp>
 #include<alya/graphics/core/details/debug.hpp>
 #include<d3d11.h>
 

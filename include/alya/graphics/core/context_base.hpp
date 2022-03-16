@@ -1,8 +1,5 @@
 #pragma once
 #include<alya/ui/core/window_base.hpp>
-#include<alya/graphics/core/depth_stencil_state.hpp>
-#include<optional>
-#include<alya/graphics/core/details/context_base_fwd.hpp>
 #include<alya/graphics/core/details/impl/d3d11_context.hpp>
 
 namespace alya::graphics::core
@@ -54,6 +51,7 @@ namespace alya::graphics::core
 		friend class sampler;
 		template<typename...T>
 		friend class vertex_stream;
+		friend class frame_buffer_base;
 	};
 
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include<alya/utility/windows/com/shared_ptr.hpp>
+#include<alya/graphics/core/details/impl/d3d11_device.hpp>
 #include<array>
 
 struct ID3D11RenderTargetView;
@@ -12,7 +12,7 @@ namespace alya::graphics::core::details
 	{
 	public:
 
-		d3d11_frame_buffer()noexcept = default;
+		d3d11_frame_buffer(d3d11_device&) noexcept {}
 		d3d11_frame_buffer(const d3d11_frame_buffer&) = delete;
 		d3d11_frame_buffer(d3d11_frame_buffer&&) = default;
 		d3d11_frame_buffer& operator=(const d3d11_frame_buffer&) = delete;
@@ -41,6 +41,9 @@ namespace alya::graphics::core::details
 			if (depth_stencil_buffer_)
 				do_clear_depth(depth_stencil_buffer_, d);
 		}
+	protected:
+
+		d3d11_frame_buffer()noexcept = default;
 
 	private:
 		

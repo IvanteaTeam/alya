@@ -1,6 +1,5 @@
 #include<alya/graphics/core/details/impl/d3d11_input_layout.hpp>
 #include<alya/graphics/core/details/impl/dxgi_format.hpp>
-#include<alya/graphics/core/details/impl/d3d11_context.hpp>
 #include<alya/graphics/core/details/debug.hpp>
 #include<d3d11.h>
 #include<vector>

@@ -11,7 +11,7 @@ namespace alya::graphics::core
 	{
 	public:
 
-		explicit frame_buffer_base(context_base&) noexcept {};
+		explicit frame_buffer_base(context_base&context) : impl_(context.impl_) {};
 		
 		void attach_color_buffer(color_buffer_view_base*color_buffer, size_t slot)
 		{

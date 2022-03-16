@@ -1,13 +1,10 @@
 #pragma once
-#include<alya/utility/windows/com/shared_ptr.hpp>
+#include<alya/graphics/core/details/impl/d3d11_device.hpp>
 
-struct ID3D11Device;
 struct ID3D11PixelShader;
 
 namespace alya::graphics::core::details
 {
-
-	class d3d11_device;
 
 	class d3d11_pixel_shader
 	{

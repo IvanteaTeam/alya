@@ -1,18 +1,15 @@
 #pragma once
-#include<alya/utility/windows/com/shared_ptr.hpp>
+#include<alya/graphics/core/details/impl/d3d11_device.hpp>
 #include<alya/graphics/core/details/mipmap_source.hpp>
 #include<alya/graphics/core/details/map_type.hpp>
 #include<alya/graphics/core/memory_qualifier.hpp>
 #include<alya/graphics/core/buffer_binding.hpp>
 #include<memory>
 
-struct ID3D11Device;
 struct ID3D11Buffer;
 
 namespace alya::graphics::core::details
 {
-	
-	class d3d11_device;
 
 	class d3d11_buffer
 	{

@@ -1,14 +1,11 @@
 #pragma once
-#include<alya/utility/windows/com/shared_ptr.hpp>
+#include<alya/graphics/core/details/impl/d3d11_device.hpp>
 #include<alya/graphics/core/details/attribute_signature.hpp>
 
 struct ID3D11InputLayout;
-struct ID3D11Device;
 
 namespace alya::graphics::core::details
 {
-
-	class d3d11_device;
 
 	class d3d11_input_layout
 	{

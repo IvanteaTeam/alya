@@ -1,5 +1,4 @@
 #pragma once
-//#include<alya/graphics/core/details/impl/d3d11_vertex_stream_base.hpp>
 #include<alya/graphics/core/details/impl/d3d11_input_layout.hpp>
 #include<alya/graphics/core/details/impl/d3d11_vertex_shader.hpp>
 
@@ -13,8 +12,8 @@ namespace alya::graphics::core::details
 	{
 	public:
 
-		d3d11_vertex_stream(const std::array<attribute_signature, Size>&signatures, const d3d11_vertex_shader&shader, d3d11_context&context)
-			: d3d11_vertex_stream(std::make_index_sequence<Size>{}, signatures, shader, context)
+		d3d11_vertex_stream(const std::array<attribute_signature, Size>&signatures, const d3d11_vertex_shader&shader, d3d11_device&device)
+			: d3d11_vertex_stream(std::make_index_sequence<Size>{}, signatures, shader, device)
 		{}
 
 		void attach_attribute_stream(windows::com::shared_ptr<ID3D11Buffer>buffer, size_t offset, size_t stride, size_t index)
@@ -27,8 +26,8 @@ namespace alya::graphics::core::details
 	private:
 
 		template<size_t...I>
-		d3d11_vertex_stream(std::index_sequence<I...>, const std::array<attribute_signature, Size>& signatures, const d3d11_vertex_shader& shader, d3d11_context&context)
-			: input_layout_({ signatures[I]... }, shader.bytecode().data(), shader.bytecode().size(), context), buffers_{}, offsets_{}, strides_{}
+		d3d11_vertex_stream(std::index_sequence<I...>, const std::array<attribute_signature, Size>& signatures, const d3d11_vertex_shader& shader, d3d11_device&device)
+			: input_layout_({ signatures[I]... }, shader.bytecode().data(), shader.bytecode().size(), device), buffers_{}, offsets_{}, strides_{}
 		{}
 
 		d3d11_input_layout input_layout_;
