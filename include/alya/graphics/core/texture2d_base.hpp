@@ -15,6 +15,7 @@ namespace alya::graphics::core
 
 	class bad_mipmaps : public std::logic_error 
 	{
+	public:
 		bad_mipmaps() : logic_error("Invalid mipmaps.") {}
 	};
 	
@@ -25,7 +26,11 @@ namespace alya::graphics::core
 	class texture2d_base
 	{
 	public:
+		/*
 		
+		Creates texture with unspecified data
+		
+		*/
 		texture2d_base(
 			size_t width,
 			size_t height,
@@ -35,9 +40,14 @@ namespace alya::graphics::core
 			memory_qualifier memory,
 			texture_binding bind,
 			context_base&context
-		) : impl_(width, height, mipmaps, 1, samples, pixel, memory, bind, context.impl_)
+		) : impl_(width, height, mipmaps, samples, pixel, memory, bind, context.impl_)
 		{}
 
+		/*
+		
+		Creates texture with specified mipmaps
+		
+		*/
 		texture2d_base(
 			size_t width,
 			size_t height,
@@ -47,9 +57,14 @@ namespace alya::graphics::core
 			memory_qualifier memory,
 			texture_binding bind,
 			context_base&context
-		) : impl_(width, height, mipmaps, 1, init, pixel, memory, bind, context.impl_)
+		) : impl_(width, height, mipmaps, init, pixel, memory, bind, context.impl_)
 		{}
 
+		/*
+		
+		Creates texture with unspecified count of mipmaps(for mipmaps generating purpose)
+		
+		*/
 		texture2d_base(
 			size_t width,
 			size_t height,
@@ -57,7 +72,7 @@ namespace alya::graphics::core
 			memory_qualifier memory,
 			texture_binding bind,
 			context_base&context
-		) : impl_(width, height, 0, 1, nullptr, pixel, memory, bind, context.impl_)
+		) : texture2d_base(width, height, 0, 1, pixel, memory, bind, context)
 		{}
 
 		size_t mipmaps()const noexcept
@@ -75,17 +90,15 @@ namespace alya::graphics::core
 
 	protected:
 
-		void write_mipmap(size_t index, details::mipmap_source image)noexcept
+		void write_mipmap(size_t index, details::mipmap_source image)
 		{
-			impl_.update(index, 0, image);
+			impl_.write_mipmap(image, 0, index);
 		}
 		
 		void generate_mipmaps()noexcept
 		{
 			impl_.generate_mipmaps();
 		}
-
-		texture2d_base() = default;
 
 	private:
 		

@@ -6,9 +6,9 @@
 namespace alya::graphics::core::details
 {
 
-	d3d11_pixel_shader::d3d11_pixel_shader(const void*bytecode, size_t size, d3d11_context&context)
+	d3d11_pixel_shader::d3d11_pixel_shader(const void*bytecode, size_t size, d3d11_device&device)
 	{
-		ALYA_GFX_CALL(context.device().native_handle()->CreatePixelShader(bytecode, size, nullptr, &impl_));
+		ALYA_GFX_CALL(device.native_handle()->CreatePixelShader(bytecode, size, nullptr, &impl_));
 	}
 
 }

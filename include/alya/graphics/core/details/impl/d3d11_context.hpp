@@ -14,7 +14,7 @@ struct ID3D11DeviceContext;
 namespace alya::graphics::core::details
 {
 
-	class d3d11_context
+	class d3d11_context : public d3d11_device
 	{
 	public:
 
@@ -22,17 +22,17 @@ namespace alya::graphics::core::details
 		using native_handle_type = windows::com::shared_ptr<ID3D11DeviceContext>;
 
 		d3d11_context(native_window_handle_type window, pixel_type back_buffer_pixel, pixel_type depth_buffer_pixel, size_t samples);
-	
+		/*
 		native_handle_type native_handle()const noexcept
 		{
 			return context_;
-		}
-
+		}*/
+		/**
 		d3d11_device& device()noexcept
 		{
 			return device_;
 		}
-
+		*/
 		d3d11_default_frame_buffer& default_frame_buffer()noexcept
 		{
 			return default_frame_buffer_;
@@ -65,7 +65,7 @@ namespace alya::graphics::core::details
 		void do_bind_vertices(const ID3D11Buffer* const*, const uint32_t* strides, const uint32_t* offsets, size_t count);
 		void bind_input_layout(const ID3D11InputLayout*);
 
-		d3d11_device device_;
+		//d3d11_device device_;
 		d3d11_default_frame_buffer default_frame_buffer_;
 		windows::com::shared_ptr<ID3D11DeviceContext> context_;
 	};

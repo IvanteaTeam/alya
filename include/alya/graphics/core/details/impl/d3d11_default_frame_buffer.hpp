@@ -1,15 +1,13 @@
 #pragma once
 #include<alya/graphics/core/details/impl/d3d11_frame_buffer.hpp>
 #include<alya/graphics/core/details/impl/dxgi_swap_chain.hpp>
-#include<alya/graphics/core/details/impl/d3d11_texture2d.hpp>
+#include<alya/graphics/core/details/impl/d3d11_texture2d_array.hpp>
 #include<optional>
 
 struct ID3D11Device;
 
 namespace alya::graphics::core::details
 {
-
-	class d3d11_context;
 
 	class d3d11_default_frame_buffer : public d3d11_frame_buffer
 	{
@@ -60,7 +58,7 @@ namespace alya::graphics::core::details
 		dxgi_swap_chain swap_chain_;
 		pixel_type back_buffer_pixel_, depth_buffer_pixel_;
 		size_t samples_;
-		std::optional<d3d11_texture2d> back_buffer_ms_;
+		std::optional<d3d11_texture2d_array> back_buffer_ms_;
 	};
 
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include<alya/utility/image_view.hpp>
+#include<array>
 
 namespace alya::graphics::core::details
 {

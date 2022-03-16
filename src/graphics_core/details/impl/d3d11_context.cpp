@@ -6,11 +6,10 @@ namespace alya::graphics::core::details
 {
 
 	d3d11_context::d3d11_context(native_window_handle_type window, pixel_type back_buffer_pixel, pixel_type depth_buffer_pixel, size_t samples) : 
-		device_(), 
-		default_frame_buffer_(window, back_buffer_pixel, depth_buffer_pixel, samples, device_.native_handle())
+		default_frame_buffer_(window, back_buffer_pixel, depth_buffer_pixel, samples, native_handle())
 	{
 
-		device_.native_handle()->GetImmediateContext(&context_);
+		native_handle()->GetImmediateContext(&context_);
 
 	}
 
@@ -44,7 +43,7 @@ namespace alya::graphics::core::details
 
 			windows::com::shared_ptr<ID3D11RasterizerState> rs;
 
-			ALYA_GFX_CALL(device().native_handle()->CreateRasterizerState(&rd, rs.address()));
+			ALYA_GFX_CALL(native_handle()->CreateRasterizerState(&rd, rs.address()));
 
 			context_->RSSetState(rs.get());
 		}

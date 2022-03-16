@@ -7,7 +7,7 @@
 namespace alya::graphics::core::details
 {
 
-	d3d11_buffer::d3d11_buffer(const void*data, size_t size, memory_qualifier memory, buffer_binding bind, d3d11_context&context)
+	d3d11_buffer::d3d11_buffer(const void*data, size_t size, memory_qualifier memory, buffer_binding bind, d3d11_device&device)
 		: size_(size)
 	{
 		auto [usage, cpu_access] = d3d11_usage(memory);
@@ -23,7 +23,7 @@ namespace alya::graphics::core::details
 		init.pSysMem = data;
 		init.SysMemPitch = 0;
 		init.SysMemSlicePitch = 0;
-		ALYA_GFX_CALL(context.device().native_handle()->CreateBuffer(&desc, data ? &init : nullptr, &impl_));
+		ALYA_GFX_CALL(device.native_handle()->CreateBuffer(&desc, data ? &init : nullptr, &impl_));
 	}
 
 	std::unique_ptr<void, d3d11_buffer::unmap_t> d3d11_buffer::map(details::map_type type)

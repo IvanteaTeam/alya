@@ -41,9 +41,9 @@ namespace alya::graphics::core
 			std::forward_iterator auto mips_begin, 
 			std::forward_iterator auto mips_end,
 			context_base&context
-		) : texture2d_base()
+		) : texture2d_base(make_texture_with_mipmaps(mips_begin, mips_end, context))
 		{
-			std::array<details::mipmap_source, 20> init{};
+			/*std::array<details::mipmap_source, 20> init{};
 			
 			size_t width, height, count;
 
@@ -57,7 +57,7 @@ namespace alya::graphics::core
 				binding,
 				context
 			);
-
+			*/
 		}
 		
 		basic_texture2d(generate_mipmaps_t, basic_image2d_view<value_type>image, context_base&context) : 
@@ -76,6 +76,15 @@ namespace alya::graphics::core
 		
 	private:
 
+		static texture2d_base make_texture_with_mipmaps(std::forward_iterator auto mips_begin, std::forward_iterator auto mips_end, context_base&context){
+			std::array<details::mipmap_source, 20> init{};
+
+			size_t width, height, count;
+
+			make_mipmaps_init(init.data(), mips_begin, mips_end, width, height, count);
+			return texture2d_base(width, height, count, init.data(), details::make_pixel_type<value_type>(), memory_qualifier, binding, context);
+		}
+
 		static void make_mipmaps_init(details::mipmap_source*, std::forward_iterator auto, std::forward_iterator auto, size_t& width, size_t& height, size_t& count);
 
 	};
@@ -93,10 +102,10 @@ namespace alya::graphics::core
 			basic_image2d_view<value_type> image = *it;
 			if (!w * !h)
 			{
-				w = image->width();
-				h = image->height();
+				w = image.width();
+				h = image.height();
 			}
-			if (w == image->width() && h == image->height())
+			if (w == image.width() && h == image.height())
 				*curr = { image.data(), image.row_alignment(), 0 };
 			else
 				throw bad_mipmaps{};

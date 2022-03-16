@@ -40,12 +40,12 @@ namespace alya::graphics::core::details
 
 		if (samples() > 1)
 		{
-			d3d11_texture2d back_buffer_ms(width(), height(), 1, 1, samples(), back_buffer_pixel_, memory_qualifier::default_, texture_binding::color_buffer, device);
+			d3d11_texture2d_array back_buffer_ms(width(), height(), 1, 1, samples(), false, back_buffer_pixel_, memory_qualifier::default_, texture_binding::color_buffer, device);
 			d3d11_render_target_view back_buffer_ms_view(back_buffer_ms.native_handle());
 			attach_color_buffer(back_buffer_ms_view.native_handle(), 0);
 			if (depth_buffer_pixel_ != pixel_type::none)
 			{
-				d3d11_texture2d depth_buffer_ms(width(), height(), 1, 1, samples(), depth_buffer_pixel_, memory_qualifier::default_, texture_binding::depth_stencil_buffer, device);
+				d3d11_texture2d_array depth_buffer_ms(width(), height(), 1, 1, samples(), false, depth_buffer_pixel_, memory_qualifier::default_, texture_binding::depth_stencil_buffer, device);
 				d3d11_depth_stencil_view depth_buffer_ms_view(depth_buffer_ms.native_handle());
 				attach_depth_stencil_buffer(depth_buffer_ms_view.native_handle());
 			}
@@ -57,7 +57,7 @@ namespace alya::graphics::core::details
 			attach_color_buffer(back_buffer_view.native_handle(), 0);
 			if (depth_buffer_pixel_ != pixel_type::none)
 			{
-				d3d11_texture2d depth_buffer(width(), height(), 1, 1, 1, depth_buffer_pixel_, memory_qualifier::default_, texture_binding::depth_stencil_buffer, device);
+				d3d11_texture2d_array depth_buffer(width(), height(), 1, 1, 1, false, depth_buffer_pixel_, memory_qualifier::default_, texture_binding::depth_stencil_buffer, device);
 				d3d11_depth_stencil_view depth_buffer_ms_view(depth_buffer.native_handle(), 0);
 				attach_depth_stencil_buffer(depth_buffer_ms_view.native_handle());
 			}

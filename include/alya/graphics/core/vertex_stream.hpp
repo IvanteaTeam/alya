@@ -16,7 +16,7 @@ namespace alya::graphics::core
 	};
 
 	template<typename...T>
-	class vertex_stream// : public vertex_stream_base
+	class vertex_stream
 	{
 	public:
 

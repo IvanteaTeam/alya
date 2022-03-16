@@ -8,7 +8,7 @@
 namespace alya::graphics::core::details
 {
 
-	d3d11_input_layout::d3d11_input_layout(std::initializer_list<attribute_signature>signatures, const void* bytecode, size_t bytecode_size, d3d11_context&context)
+	d3d11_input_layout::d3d11_input_layout(std::initializer_list<attribute_signature>signatures, const void* bytecode, size_t bytecode_size, d3d11_device&device)
 	{
 		std::vector<D3D11_INPUT_ELEMENT_DESC> descs;
 
@@ -28,7 +28,7 @@ namespace alya::graphics::core::details
 
 		//_ALYA_DEBUG_REPORT(int(descs[0].Format));
 
-		ALYA_GFX_CALL(context.device().native_handle()->CreateInputLayout(descs.data(), descs.size(), bytecode, bytecode_size, &impl_));
+		ALYA_GFX_CALL(device.native_handle()->CreateInputLayout(descs.data(), descs.size(), bytecode, bytecode_size, &impl_));
 	}
 
 }
