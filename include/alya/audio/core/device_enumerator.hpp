@@ -3,40 +3,56 @@
 #include<alya/audio/core/device_list_events.hpp>
 #include<functional>
 #include<optional>
+#include<alya/audio/core/details/impl/wasapi_device_enumerator.hpp>
+#include<algorithm>
+#include<iterator>
 
 namespace alya::audio::core
 { 
-
+	/*
 	namespace details
 	{
 
 		class notification_client;
 
-	}
+	}*/
 
 	class device_enumerator
 	{
 	public:
-
-		device_enumerator()noexcept;
-		device_enumerator(const device_enumerator&) = delete;
-		device_enumerator(device_enumerator&&) = default;
-		device_enumerator& operator=(const device_enumerator&) = delete;
-		device_enumerator& operator=(device_enumerator&&) = default;
-
-		std::vector<device> get_devices()const noexcept;
-		std::optional<device> get_default_device()const noexcept;
 		
-		void set_device_list_callback(std::function<void()>, default_device_changed_t);
-		void set_device_list_callback(std::function<void()>, device_list_changed_t);
+		std::optional<device> get_default_device()const
+		{
+			auto device_ = impl_.get_default_device();
+			if (device_)
+				return device(std::move(*device_));
+			else
+				return std::nullopt;
+		}
+
+		std::vector<device> get_devices()const
+		{
+			auto devices = impl_.get_devices();
+			std::vector<device> out;
+			out.reserve(devices.size());
+			std::transform(devices.begin(), devices.end(), std::back_inserter(out), [](auto&& d) { return device(std::move(d)); });
+			return out;
+		}
+
+		void set_event_callback(std::function<void()>callback, default_device_changed_t)
+		{
+			using enum details::device_list_event_type;
+			impl_.set_event_callback(callback, default_device_changed);
+		}
+
+		void set_event_callback(std::function<void()>callback, device_list_changed_t)
+		{
+			using enum details::device_list_event_type;
+			impl_.set_event_callback(callback, device_list_changed);
+		}
 
 	private:
-
-		std::shared_ptr<details::notification_client>
-			default_device_changed_notification_client_,
-			device_list_changed_notification_client_;
-
-		mutable windows::com::shared_ptr<IMMDeviceEnumerator> device_enumerator_;
+		details::wasapi_device_enumerator impl_;
 	};
 	
 }

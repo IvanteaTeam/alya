@@ -1,5 +1,5 @@
 #pragma once
-#include<string>
+#include<alya/audio/core/details/impl/wasapi_device_id.hpp>
 
 namespace alya::audio::core
 {
@@ -8,30 +8,15 @@ namespace alya::audio::core
 	{
 	public:
 
-		device_id() = default;
-
-		friend bool operator==(const device_id&a, const device_id&b)noexcept
-		{
-			return a.id_ == b.id_;
-		}
-
-		friend bool operator!=(const device_id& a, const device_id& b)noexcept
-		{
-			return a.id_ != b.id_;
-		}
-
-		operator bool()const noexcept
-		{
-			return *this == device_id{};
-		}
+		
 
 	private:
 		
-		explicit device_id(std::wstring id)
-			: id_(id)
+		device_id(details::wasapi_device_id&&id)
+			: impl_(std::move(id))
 		{}
 
-		std::wstring id_;
+		details::wasapi_device_id impl_;
 		friend class device_enumerator;
 		friend class device;
 	};

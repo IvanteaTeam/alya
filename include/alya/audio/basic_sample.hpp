@@ -3,7 +3,6 @@
 #include<alya/async/promise.hpp>
 #include<alya/audio/basic_decoder.hpp>
 #include<alya/resource/bad_format.hpp>
-#include<alya/audio/basic_engine.hpp>
 
 namespace alya::audio
 {
@@ -68,6 +67,11 @@ namespace alya::audio
 			data_ = nullptr;
 		}
 
+		const sample_type* data()const noexcept
+		{
+			return data_;
+		}
+
 		class importer;
 
 	private:
@@ -83,9 +87,6 @@ namespace alya::audio
 		size_t frames_;
 		size_t sample_rate_;
 		allocator_type allocator_;
-
-		template<typename WaveFormat, typename Executor, typename Allocator>
-		friend async::promise<void> async_play(basic_engine<WaveFormat, Executor>&, const basic_sample<WaveFormat, Allocator>&);
 	};
 
 	template<typename WaveFormat, typename Allocator>
@@ -121,35 +122,5 @@ namespace alya::audio
 
 	};
 
-	template<typename WaveFormat, typename Executor, typename Allocator>
-	async::promise<void> async_play(basic_engine<WaveFormat, Executor>&engine, const basic_sample<WaveFormat, Allocator>&sample)
-	{
-		auto [p, d] = async::make_promise<void>();
-
-		engine.async_play(buffer_iterator<WaveFormat>([was_got = false, data = sample.data_, frames = sample.frames(), d = std::move(d), &engine](bool end_of_play)mutable->core::basic_buffer<WaveFormat> {
-			auto set = [&]() {
-				async::execute(engine.get_executor(), [d = std::move(d)]()mutable {
-					d.set_value();
-				});
-			};
-			if(end_of_play)
-			{
-				set();
-				return {};
-			}
-			if (was_got)
-			{
-				set();
-				return {};
-			}
-			else
-			{
-				was_got = true;
-				return { data, frames };
-			}
-		}));
-
-		return std::move(p);
-	}
 
 }
