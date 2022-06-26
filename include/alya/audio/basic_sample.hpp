@@ -3,18 +3,19 @@
 #include<alya/async/promise.hpp>
 #include<alya/audio/basic_decoder.hpp>
 #include<alya/resource/bad_format.hpp>
+#include<alya/audio/core/frame.hpp>
 
 namespace alya::audio
 {
 	
-	template<typename WaveFormat, typename Allocator = std::allocator<typename WaveFormat::sample_type>>
+	template<typename WaveFormat, typename Allocator = std::allocator<core::frame<WaveFormat>>>
 	class basic_sample
 	{
 	public:
 
 		using wave_format = WaveFormat;
 		using allocator_type = Allocator;
-		using sample_type = typename wave_format::sample_type;
+		using frame_type = core::frame<wave_format>;
 		static const size_t channels = wave_format::channels;
 
 		basic_sample(const allocator_type& alloc = allocator_type{}) noexcept(std::is_nothrow_copy_constructible_v<allocator_type>) : 
@@ -67,7 +68,7 @@ namespace alya::audio
 			data_ = nullptr;
 		}
 
-		const sample_type* data()const noexcept
+		const frame_type* data()const noexcept
 		{
 			return data_;
 		}
@@ -76,14 +77,14 @@ namespace alya::audio
 
 	private:
 
-		basic_sample(sample_type*data, size_t frames, size_t sample_rate, const allocator_type&alloc) : 
+		basic_sample(frame_type*data, size_t frames, size_t sample_rate, const allocator_type&alloc) : 
 			data_(data),
 			frames_(frames),
 			sample_rate_(sample_rate),
 			allocator_(alloc)
 		{}
 
-		sample_type* data_;
+		frame_type* data_;
 		size_t frames_;
 		size_t sample_rate_;
 		allocator_type allocator_;
@@ -109,12 +110,12 @@ namespace alya::audio
 				throw resource::bad_format{};
 			if (decoder.channels() != channels)
 				throw resource::bad_format{};
-			size_t buffer_size = decoder.frames() * channels;
-			auto buffer = alloc.allocate(buffer_size);
-			decoder.decode_some(buffer, buffer + buffer_size, e);
+			
+			auto buffer = alloc.allocate(decoder.frames());
+			decoder.decode_some(reinterpret_cast<sample_type*>(buffer), reinterpret_cast<sample_type*>(buffer + decoder.frames()), e);
 			if (e)
 			{
-				alloc.deallocate(buffer, buffer_size);
+				alloc.deallocate(buffer, decoder.frames());
 				throw resource::bad_format{};
 			}
 			return basic_sample(buffer, decoder.frames(), decoder.sample_rate(), alloc);
