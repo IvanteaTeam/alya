@@ -13,17 +13,18 @@ namespace alya::audio
 		using wave_format = WaveFormat;
 		using frame_type = core::frame<wave_format>;
 
-		
-		//basic_sample_player() : data_(nullptr), size_(0), offset_(0) {}
-		/*
 		template<typename A>
-		void play(const basic_sample<wave_format, A>&sample)
-		{
-			offset_ = size_;
-		}*/
+		explicit basic_sample_player(const basic_sample<wave_format, A>&s) : 
+			data_(s.data()), 
+			frames_(s.frames()), 
+			offset_(frames_), 
+			sample_rate_(s.sample_rate())
+		{}
 
-		template<typename A>
-		basic_sample_player(const basic_sample<wave_format, A>&s) : data_(s.data()), frames_(s.frames()), offset_(frames_), sample_rate_(s.sample_rate()) {}
+		basic_sample_player(const basic_sample_player&) = delete;
+		basic_sample_player(basic_sample_player&&) = delete;
+		basic_sample_player& operator=(const basic_sample_player&) = delete;
+		basic_sample_player& operator=(basic_sample_player&&) = delete;
 
 		core::const_buffer<wave_format> get_data(size_t frames)noexcept override
 		{
