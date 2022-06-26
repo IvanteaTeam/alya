@@ -12,7 +12,7 @@ namespace alya::audio
 		using frame_type = core::frame<wave_format>;
 		
 		virtual size_t sample_rate()const noexcept = 0;
-		virtual core::buffer<wave_format> get_data(size_t frames)noexcept = 0;
+		virtual core::const_buffer<wave_format> get_data(size_t frames)noexcept = 0;
 		virtual ~basic_channel() = default;
 		
 	};
