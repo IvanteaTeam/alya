@@ -19,7 +19,10 @@ namespace alya::audio::core::details
 		wasapi_audio_client& operator=(const wasapi_audio_client&) = delete;
 		wasapi_audio_client& operator=(wasapi_audio_client&&) = default;
 
-		bool is_valid()const noexcept;
+		bool is_valid()const noexcept
+		{
+			return true;
+		}
 		void start();
 		void stop()noexcept;
 

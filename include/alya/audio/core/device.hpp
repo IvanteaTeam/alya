@@ -34,7 +34,7 @@ namespace alya::audio::core
 		details::wasapi_device impl_;
 		friend class context_base;
 		friend class device_enumerator;
-		friend class endpoint_base;
+		friend class system_endpoint_base;
 	};
 
 }

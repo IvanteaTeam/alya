@@ -18,9 +18,9 @@ namespace alya::audio::core::details
 			sample_rate_(sample_rate)
 		{}
 
-		bool is_running()const noexcept
+		bool is_started()const noexcept
 		{
-			return is_running_;
+			return is_started_;
 		}
 
 		bool is_valid()const noexcept
@@ -30,13 +30,13 @@ namespace alya::audio::core::details
 
 		void start()
 		{
-			if (!is_running())
+			if (!is_started())
 				do_start();
 		}
 
-		void stop()
+		void stop() noexcept
 		{
-			if (is_running())
+			if (is_started())
 				do_stop();
 		}
 
@@ -62,7 +62,7 @@ namespace alya::audio::core::details
 
 		void start_audio_thread()noexcept
 		{
-			is_running_ = true;
+			is_started_ = true;
 			audio_thread_ = std::thread{ [&]() {
 
 				try
@@ -70,7 +70,7 @@ namespace alya::audio::core::details
 
 					size_t buffer_size = audio_client_.get_buffer_size();
 
-					while (is_running_)
+					while (is_started_)
 					{
 						{
 							size_t offset = audio_client_.get_current_offset();
@@ -91,7 +91,7 @@ namespace alya::audio::core::details
 
 		void stop_audio_thread()noexcept
 		{
-			is_running_ = false;
+			is_started_ = false;
 			if (std::this_thread::get_id() == audio_thread_.get_id())
 				audio_thread_.detach();
 			else
@@ -101,7 +101,7 @@ namespace alya::audio::core::details
 		virtual void fill_buffer(void*, size_t frames)noexcept = 0;
 		virtual void handle_device_lost()noexcept = 0;
 
-		std::atomic<bool> is_running_;
+		std::atomic<bool> is_started_;
 		size_t sample_rate_;
 		wasapi_audio_client audio_client_;
 		wasapi_render_client render_client_;
