@@ -19,4 +19,9 @@ namespace alya::audio::core::details
 		}
 	}
 
+	void wasapi_clock_adjustment::set_sample_rate(size_t sr)
+	{
+		clock_adjustment_->SetSampleRate(sr);
+	}
+
 }

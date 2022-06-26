@@ -6,7 +6,7 @@ namespace alya::audio::core
 {
 
 	template<typename WaveFormat>
-	class basic_system_endpoint : public system_endpoint_base, basic_endpoint<WaveFormat>
+	class basic_system_endpoint : public system_endpoint_base, public basic_endpoint<WaveFormat>
 	{
 	public:
 
@@ -18,25 +18,35 @@ namespace alya::audio::core
 			system_endpoint_base(device_, details::make_sample_type<sample_type>(), channels, sample_rate)
 		{}
 
-		virtual void start() 
+		void start() override
 		{
 			system_endpoint_base::start();
 		}
-		virtual void stop()noexcept 
+		void stop()noexcept override
 		{
 			system_endpoint_base::stop();
 		}
-		virtual bool is_started()const noexcept 
+		bool is_started()const noexcept override
 		{
 			return system_endpoint_base::is_started();
 		}
-		virtual bool is_valid()const noexcept 
+		bool is_valid()const noexcept override
 		{
 			return system_endpoint_base::is_valid();
 		}
-		virtual void set_audio_callback(std::function<void(buffer<wave_format>)>cb)
+		void set_audio_callback(std::function<void(buffer<wave_format>)>cb) override
 		{
 			audio_callback_ = std::move(cb);
+		}
+	
+		size_t sample_rate()const noexcept override
+		{
+			return system_endpoint_base::sample_rate();
+		}
+
+		void set_sample_rate(size_t sr) override
+		{
+			system_endpoint_base::set_sample_rate(sr);
 		}
 
 	private:

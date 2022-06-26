@@ -46,6 +46,11 @@ namespace alya::audio::core::details
 			sample_rate_ = sample_rate;
 		}
 
+		size_t sample_rate()const noexcept
+		{
+			return sample_rate_;
+		}
+
 	private:
 
 		void do_start()
@@ -64,7 +69,7 @@ namespace alya::audio::core::details
 		{
 			is_started_ = true;
 			audio_thread_ = std::thread{ [&]() {
-
+				
 				try
 				{
 
