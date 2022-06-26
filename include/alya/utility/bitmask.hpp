@@ -40,7 +40,7 @@ namespace alya
 			return (static_cast<underlying_type>(val) | static_cast<underlying_type>(v)) == static_cast<underlying_type>(val);
 		}
 
-		constexpr operator value_type()
+		constexpr operator value_type()const noexcept
 		{
 			return value();
 		}

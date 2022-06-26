@@ -64,7 +64,7 @@ namespace alya
 			C out;
 			using T = pixel_traits<C>;
 			
-			for (size_t i = 0; i < T::count(); i++)
+			for (size_t i = 0; i < T::element_count; i++)
 			{
 				auto default_val = [&]() constexpr
 				{
@@ -76,7 +76,7 @@ namespace alya
 					else
 						return 0;
 				};
-				if (i < pixel_traits<B>::count())
+				if (i < pixel_traits<B>::element_count)
 					out[i] = a[i];
 				else
 					out[i] = typename T::element_type(default_val());

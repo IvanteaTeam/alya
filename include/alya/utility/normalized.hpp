@@ -19,11 +19,13 @@ namespace alya
 		constexpr normalized(const value_type&value) noexcept : value_(value) {}
 		constexpr normalized(std::floating_point auto const& value) noexcept : 
 			normalized(
-				std::clamp(
-					floating_point_type(value), 
-					floating_point_type(-1), 
-					floating_point_type(1)
-				) * floating_point_type((std::numeric_limits<value_type>::max)())
+				value_type(
+					std::clamp(
+						floating_point_type(value), 
+						floating_point_type(-1), 
+						floating_point_type(1)
+					) * floating_point_type((std::numeric_limits<value_type>::max)())
+				)
 			)
 		{}
 
@@ -88,10 +90,16 @@ namespace alya
 	struct is_normalized<normalized<T, U>> : std::true_type {};
 
 	template<typename T>
+	constexpr bool is_normalized_v = is_normalized<T>::value;
+
+	template<typename T>
 	struct is_signed : std::is_signed<T> {};
 	
 	template<typename T, typename U>
 	struct is_signed<normalized<T, U>> : is_signed<typename normalized<T, U>::value_type> {};
+
+	template<typename T>
+	constexpr bool is_signed_v = is_signed<T>::value;
 
 	using uint8n_t = normalized<uint8_t>;
 	using int8n_t = normalized<int8_t>;
