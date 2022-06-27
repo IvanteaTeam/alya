@@ -1,6 +1,6 @@
 #pragma once
 #include<alya/utility/pixel_traits.hpp>
-#include<alya/resource/async_load.hpp>
+#include<alya/async/promise.hpp>
 #include<alya/async/execute.hpp>
 #include<alya/resource/bad_format.hpp>
 #include<alya/resource/details/image_import_impl.hpp>
@@ -102,7 +102,7 @@ namespace alya::resource
 			return reinterpret_cast<const value_type*>(data_);
 		}
 
-		class importer;
+		class loader;
 
 	private:
 		
@@ -136,7 +136,7 @@ namespace alya::resource
 	constexpr flip_vertically_t flip_vertically{};
 
 	template<typename Pixel, typename Allocator>
-	class basic_image<Pixel, Allocator>::importer
+	class basic_image<Pixel, Allocator>::loader
 	{
 	public:
 		using image_type = basic_image<Pixel, Allocator>;
@@ -145,20 +145,24 @@ namespace alya::resource
 
 		static_assert(std::is_same_v<typename pixel_traits<value_type>::element_type, uint8n_t>);
 		
-		auto operator()(const auto&data, const allocator_type& alloc = allocator_type{})
+		template<typename Reader, typename Ex>
+		static async::promise<image_type> async_load(std::string path, Reader reader, Ex ex, const allocator_type& alloc = allocator_type{})
 		{
-			return do_import(data, alloc, false);
+			return do_async_import(path, reader, ex, alloc, false);
 		}
 
-		auto operator()(const auto&data, flip_vertically_t, const allocator_type& alloc = allocator_type{})
+		template<typename Reader, typename Ex>
+		static async::promise<image_type> async_load(std::string path, Reader reader, Ex ex, flip_vertically_t, const allocator_type& alloc = allocator_type{})
 		{
-			return do_import(data, alloc, true);
+			return do_async_load(path, reader, ex, alloc, true);
 		}
 
 	private:
 
-		auto do_import(const auto& data, allocator_type alloc, bool flipped)
+		template<typename Reader, typename Ex>
+		static async::promise<image_type> do_async_load(std::string path, Reader reader, Ex ex, allocator_type alloc, bool flipped)
 		{
+			auto data = co_await reader.async_read(path);
 			auto data_begin = reinterpret_cast<const char*>(&*std::begin(data));
 			auto data_end = reinterpret_cast<const char*>(&*(--std::end(data)));
 
@@ -167,7 +171,7 @@ namespace alya::resource
 			if (!image)
 				throw bad_format{};
 
-			return image_type{image, width, height, width * sizeof(value_type), alloc};
+			co_return image_type{image, width, height, width * sizeof(value_type), alloc};
 		}
 
 	};

@@ -6,12 +6,12 @@
 namespace alya::resource
 {
 	
-	class file_loader
+	class file_reader
 	{
 	public:
 		using data_type = std::vector<char>;
 		using source_type = std::string;
-		async::promise<data_type> async_load(source_type path);
+		async::promise<data_type> async_read(source_type path);
 	};
 
 }

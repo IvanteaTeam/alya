@@ -73,7 +73,7 @@ namespace alya::audio
 			return data_;
 		}
 
-		class importer;
+		class loader;
 
 	private:
 
@@ -91,18 +91,20 @@ namespace alya::audio
 	};
 
 	template<typename WaveFormat, typename Allocator>
-	class basic_sample<WaveFormat, Allocator>::importer
+	class basic_sample<WaveFormat, Allocator>::loader
 	{
 	public:
 
 		using wave_format = WaveFormat;
 		using allocator_type = Allocator;
 		using sample_type = typename wave_format::sample_type;
+		
 		static const size_t channels = wave_format::channels;
 		
-		template<typename Data>
-		basic_sample<wave_format, allocator_type> operator()(const Data& data, allocator_type alloc = allocator_type{})
+		template<typename Reader, typename Ex>
+		static async::promise<basic_sample<wave_format, allocator_type>> async_load(std::string path, Reader reader, Ex ex, allocator_type alloc = allocator_type{})
 		{
+			auto data = co_await reader.async_read(path);
 			basic_decoder<sample_type> decoder;
 			std::error_code e;
 			decoder.open(std::begin(data), std::end(data), e);
@@ -118,7 +120,7 @@ namespace alya::audio
 				alloc.deallocate(buffer, decoder.frames());
 				throw resource::bad_format{};
 			}
-			return basic_sample(buffer, decoder.frames(), decoder.sample_rate(), alloc);
+			co_return basic_sample(buffer, decoder.frames(), decoder.sample_rate(), alloc);
 		}
 
 	};

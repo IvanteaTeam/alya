@@ -1,4 +1,4 @@
-#include<alya/resource/file_loader.hpp>
+#include<alya/resource/file_reader.hpp>
 #include<boost/asio/stream_file.hpp>
 #include<boost/asio/read.hpp>
 #include<boost/asio/streambuf.hpp>
@@ -7,7 +7,7 @@
 namespace alya::resource
 {
 	
-	async::promise<std::vector<char>> file_loader::async_load(std::string path)
+	async::promise<std::vector<char>> file_reader::async_read(std::string path)
 	{
 		
 		struct ctx_t
