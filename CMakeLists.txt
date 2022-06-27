@@ -38,7 +38,5 @@ PROPERTIES FOLDER "alya"
 
 add_subdirectory(test_apps)
 
-set_target_properties(basic 
-audio_dev 
-gl_dev 
+set_target_properties(promise
 PROPERTIES FOLDER "alya/test_apps")
