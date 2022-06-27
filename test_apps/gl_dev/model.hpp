@@ -22,7 +22,7 @@ namespace dev {
 	{
 	private:
 
-		graphics::core::context_base& ctx;
+		graphics_context_t& ctx;
 		graphics::core::vertex_buffer<glm::vec3, graphics::core::memory_qualifier::immutable> positions;
 		graphics::core::vertex_buffer<glm::vec2, graphics::core::memory_qualifier::immutable> tex_coords;
 		size_t vertices_count;
@@ -32,7 +32,7 @@ namespace dev {
 
 		friend class Model;
 	public:
-		Mesh(graphics::core::context_base& ctx, std::vector<glm::vec3>const& vetices, std::vector<glm::vec2>const& tex_coords);
+		Mesh(graphics_context_t& ctx, std::vector<glm::vec3>const& vetices, std::vector<glm::vec2>const& tex_coords);
 		Mesh(Mesh&&) = default;
 		Mesh(Mesh const&) = delete;
 		Mesh& operator=(Mesh&&) = delete;
@@ -65,7 +65,7 @@ namespace dev {
 	public:
 		using cb_t = std::tuple<glm::mat4, glm::mat4, glm::mat4, glm::vec3>;
 	private:
-		graphics::core::context_base& ctx;
+		graphics_context_t& ctx;
 		const graphics::core::vertex_shader&vshader;
 		const graphics::core::pixel_shader&pshader;
 		std::vector<Mesh> meshes;
@@ -76,7 +76,7 @@ namespace dev {
 		graphics::core::constant_buffer<cb_t> cb;
 		glm::mat4 transform;
 	public:
-		Model(graphics::core::context_base& ctx, std::string_view file, const graphics::core::vertex_shader& vs, const graphics::core::pixel_shader& ps);
+		Model(graphics_context_t& ctx, std::string_view file, const graphics::core::vertex_shader& vs, const graphics::core::pixel_shader& ps);
 		Model(Model&&) = default;
 		Model(Model const&) = delete;
 		Model& operator=(Model&&) = default;

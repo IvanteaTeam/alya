@@ -4,8 +4,8 @@
 #include<alya/audio/core/basic_system_endpoint.hpp>
 #include<alya/audio/core/device_enumerator.hpp>
 #include<alya/audio/basic_sample.hpp>
-#include<alya/resource/file_loader.hpp>
-#include<alya/resource/async_import.hpp>
+#include<alya/resource/file_reader.hpp>
+#include<alya/resource/async_load.hpp>
 #include<boost/asio/io_context.hpp>
 #include<alya/async/delay.hpp>
 #include<alya/audio/basic_context.hpp>
@@ -20,7 +20,7 @@ boost::asio::io_context ioc;
 async::promise<void> entry()
 {
 	using namespace std::chrono_literals;
-	resource::file_loader loader;
+	resource::file_reader reader;
 
 	std::cout << "Enter path: ";
 
@@ -28,7 +28,7 @@ async::promise<void> entry()
 	std::getline(std::cin, path);
 	
 
-	auto sample = co_await resource::async_import<audio::basic_sample<wf>>(loader, path, ioc.get_executor());
+	auto sample = co_await resource::async_load<audio::basic_sample<wf>>(path, reader, ioc.get_executor());
 	
 	audio::core::basic_system_endpoint<wf> ep(audio::core::device_enumerator{}.get_default_device().value(), sample.sample_rate());
 

@@ -36,7 +36,7 @@ namespace dev
 	}
 
 
-	Mesh::Mesh(graphics::core::context_base&ctx, std::vector<glm::vec3> const&vs, std::vector<glm::vec2> const& tcs)
+	Mesh::Mesh(graphics_context_t&ctx, std::vector<glm::vec3> const&vs, std::vector<glm::vec2> const& tcs)
 		: ctx(ctx),
 		positions(vs.data(), vs.size(), ctx),
 		tex_coords(tcs.data(), tcs.size(), ctx)
@@ -62,7 +62,7 @@ namespace dev
 		return (convert_vector(diffuse_color) + convert_vector(specular) + convert_vector(ambient));
 	}
 
-	static Mesh LoadMesh(graphics::core::context_base&ctx, const aiMesh*mesh)
+	static Mesh LoadMesh(graphics_context_t&ctx, const aiMesh*mesh)
 	{
 		std::vector<glm::vec3> vs;
 		std::vector<glm::vec2> tcs;
@@ -97,7 +97,7 @@ namespace dev
 		return out;
 	}
 
-	static void LoadNode(graphics::core::context_base&ctx, std::vector<Mesh>&meshes,const aiScene*scene, const aiNode*node, glm::mat4 parent_transform)
+	static void LoadNode(graphics_context_t&ctx, std::vector<Mesh>&meshes,const aiScene*scene, const aiNode*node, glm::mat4 parent_transform)
 	{
 		auto current_transform = parent_transform * convert_matrix(&node->mTransformation);
 
@@ -120,7 +120,7 @@ namespace dev
 		}
 	}
 
-	Model::Model(graphics::core::context_base& ctx, std::string_view file, const graphics::core::vertex_shader& vs, const graphics::core::pixel_shader& ps)
+	Model::Model(graphics_context_t& ctx, std::string_view file, const graphics::core::vertex_shader& vs, const graphics::core::pixel_shader& ps)
 		: ctx(ctx), vshader(vs), pshader(ps), stream({{{"POSITION"}, {"TEX_COORD"}}}, vshader, ctx),
 		cb(ctx)
 	{
@@ -135,10 +135,10 @@ namespace dev
 
 	void Model::render(glm::mat4 view, glm::mat4 proj)
 	{
-		ctx.bind_constants(gfx::vertex_shader_target, cb, 0);
+		ctx.bind_constants(gfx::vertex_shader_tag, cb, 0);
 		ctx.bind_vertex_shader(vshader);
 		ctx.bind_pixel_shader(pshader);
-		ctx.bind_vertices(stream);
+		
 		
 		for (auto& m : meshes)
 		{
@@ -150,6 +150,7 @@ namespace dev
 			//m.render();
 			stream.attach<0>(m.positions);
 			stream.attach<1>(m.tex_coords);
+			ctx.bind_vertices(stream);
 			ctx.draw(0, m.positions.size());
 		}
 

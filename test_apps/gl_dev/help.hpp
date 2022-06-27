@@ -1,6 +1,7 @@
 #pragma once
 //#include<alya/gl/program.hpp>
 //#include<alya/gl/texture.hpp>
+#include<alya/async/promise.hpp>
 #include<string>
 
 #include<alya/graphics/core/context.hpp>
@@ -48,3 +49,5 @@ namespace alya::graphics::core
 	};
 
 }
+
+using graphics_context_t = alya::graphics::core::basic_context<alya::rgba, alya::graphics::core::depth_stencil_value<32, 0>, 2>;

@@ -1,8 +1,8 @@
 #include<thread>
 #include<iostream>
 #include<boost/asio/thread_pool.hpp>
-#include<alya/resource/async_import.hpp>
-#include<alya/resource/file_loader.hpp>
+#include<alya/resource/async_load.hpp>
+#include<alya/resource/file_reader.hpp>
 #include<alya/ui/core/window.hpp>
 #include<alya/graphics/core/context.hpp>
 #include<alya/graphics/core/vertex_buffer.hpp>
@@ -48,26 +48,26 @@ void run()
 {
 	namespace res = resource;
 
-	res::file_loader loader;
+	res::file_reader reader;
 
 	boost::asio::thread_pool tp(1);
 	
 	ui::core::window window;
 	window.open();
-	gfx::basic_context<rgba, gfx::depth_stencil_value<32, 0>, 4> ctx(window);
+	graphics_context_t ctx(window);
 
 	std::optional<gfx::vertex_shader> vs, vs1, mvs;
 	std::optional<gfx::pixel_shader> ps, ps1, mps;
 	res::image image;
 	std::atomic<int> shaders_loaded = 0;
 	
-	res::async_import<gfx::vertex_shader>(loader, BUILD_DIR"a.cso", tp.get_executor(), ctx).then([&](auto s) { vs.emplace(std::move(s)); shaders_loaded++; });
-	res::async_import<gfx::pixel_shader>(loader, BUILD_DIR"b.cso", tp.get_executor(), ctx).then([&](auto s) { ps.emplace(std::move(s)); shaders_loaded++; });
-	res::async_import<gfx::vertex_shader>(loader, BUILD_DIR"d1.cso", tp.get_executor(), ctx).then([&](auto s) { vs1.emplace(std::move(s)); shaders_loaded++; });
-	res::async_import<gfx::pixel_shader>(loader, BUILD_DIR"d2.cso", tp.get_executor(), ctx).then([&](auto s) { ps1.emplace(std::move(s)); shaders_loaded++; });
-	res::async_import<gfx::vertex_shader>(loader, BUILD_DIR"m1.cso", tp.get_executor(), ctx).then([&](auto s) { mvs.emplace(std::move(s)); shaders_loaded++; });
-	res::async_import<gfx::pixel_shader>(loader, BUILD_DIR"m2.cso", tp.get_executor(), ctx).then([&](auto s) { mps.emplace(std::move(s)); shaders_loaded++; });
-	res::async_import<res::image>(loader, __FILE__"/../models/2/textures/default_baseColor.png", tp.get_executor(), res::flip_vertically)
+	res::async_load<gfx::vertex_shader>(BUILD_DIR"a.cso", reader, tp.get_executor(), ctx).then([&](auto s) { vs.emplace(std::move(s)); shaders_loaded++; });
+	res::async_load<gfx::pixel_shader>(BUILD_DIR"b.cso", reader, tp.get_executor(), ctx).then([&](auto s) { ps.emplace(std::move(s)); shaders_loaded++; });
+	res::async_load<gfx::vertex_shader>(BUILD_DIR"d1.cso", reader, tp.get_executor(), ctx).then([&](auto s) { vs1.emplace(std::move(s)); shaders_loaded++; });
+	res::async_load<gfx::pixel_shader>(BUILD_DIR"d2.cso", reader, tp.get_executor(), ctx).then([&](auto s) { ps1.emplace(std::move(s)); shaders_loaded++; });
+	res::async_load<gfx::vertex_shader>(BUILD_DIR"m1.cso", reader, tp.get_executor(), ctx).then([&](auto s) { mvs.emplace(std::move(s)); shaders_loaded++; });
+	res::async_load<gfx::pixel_shader>(BUILD_DIR"m2.cso", reader, tp.get_executor(), ctx).then([&](auto s) { mps.emplace(std::move(s)); shaders_loaded++; });
+	res::async_load<res::image>(__FILE__"/../models/2/textures/default_baseColor.png", reader, tp.get_executor(), res::flip_vertically)
 		.then([&](auto i) { image = std::move(i); shaders_loaded++; });
 
 	while (shaders_loaded < 7)
@@ -112,31 +112,58 @@ void run()
 
 	gfx::texture_view view{ texture_of_model, 0, texture_of_model.mipmaps() };
 
+	gfx::frame_buffer frame1{ctx};
+
+	gfx::texture2d<rgba> frame1_buffer{1000, 1000, 1, ctx};
+
+	gfx::color_buffer_view frame1_color_buffer(frame1_buffer, 0);
+
+	frame1.attach_color_buffer(frame1_color_buffer, 0);
+
+	gfx::texture_view frame1_view(frame1_buffer, 0, 1);
+
+	gfx::basic_texture2d<gfx::depth_stencil_value<32, 0>, gfx::memory_qualifier::default_, gfx::texture_binding::depth_stencil_buffer, 1> frame1_depth(1000, 1000, 1, ctx);
+
+	gfx::depth_stencil_buffer_view frame1_depth_view(frame1_depth, 0);
+
+	frame1.attach_depth_stencil_buffer(frame1_depth_view);
+
 	while (!end)
 	{
 		auto begin = std::chrono::high_resolution_clock::now();
 		
 		while (ui::core::poll_event());
 
-		gfx::depth_stencil_state dss{  };
-
-		ctx.set_depth_stencil_state(dss);
+		//ctx.set_depth_stencil_state(dss);
 		ctx.set_viewport(0, 0, width, height);
 
 		ctx.clear_color(1, 1, 1, 1);
 		ctx.clear_depth(1);
+		frame1.clear_color(1, 1, 1, 1, 0);
+		frame1.clear_depth(1);
+		
 
-		ctx.bind_texture(gfx::pixel_shader_target, view, 0);
+		ctx.bind_texture(gfx::pixel_shader_tag, view, 0);
+		ctx.bind_frame_buffer(frame1);
+		ctx.bind_sampler(gfx::pixel_shader_tag, sampler, 0);
+		
+		//scene.render();
 		ctx.bind_frame_buffer(gfx::default_frame_buffer);
-		ctx.bind_sampler(gfx::pixel_shader_target, sampler, 0);
+
+		//ctx.bind_texture(gfx::pixel_shader_target, frame1_view, 0);
+		
 		scene.render();
 
 		ctx.present();
-		ctx.clear();
+		//ctx.clear();
 		auto end = std::chrono::high_resolution_clock::now();
 		
-		std::cout << (std::chrono::seconds(1) / (end - begin)) << "\n";
-		std::this_thread::sleep_for(std::chrono::milliseconds(16) - (end - begin));
+		auto frame_dur = end - begin;
+
+		std::cout << (std::chrono::seconds(1) / frame_dur) << "\n";
+		
+		if(frame_dur < std::chrono::milliseconds(16))
+			std::this_thread::sleep_for(std::chrono::milliseconds(16) - (frame_dur));
 	}
 
 
@@ -145,17 +172,8 @@ void run()
 int main()
 {
 	
-	try {
-		run();
-	}
-	catch (const std::exception&e)
-	{
-		std::cout << e.what() << "\n";
-		throw;
-	}
+	run();
 
 	return 0;
 }
-
-
 
