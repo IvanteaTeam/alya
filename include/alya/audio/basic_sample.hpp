@@ -98,7 +98,7 @@ namespace alya::audio
 		using wave_format = WaveFormat;
 		using allocator_type = Allocator;
 		using sample_type = typename wave_format::sample_type;
-		
+		using resource_type = basic_sample<wave_format, allocator_type>;
 		static const size_t channels = wave_format::channels;
 		
 		template<typename Reader, typename Ex>

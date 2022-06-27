@@ -142,6 +142,7 @@ namespace alya::resource
 		using image_type = basic_image<Pixel, Allocator>;
 		using value_type = typename image_type::value_type;
 		using allocator_type = typename image_type::allocator_type;
+		using resource_type = image_type;
 
 		static_assert(std::is_same_v<typename pixel_traits<value_type>::element_type, uint8n_t>);
 		

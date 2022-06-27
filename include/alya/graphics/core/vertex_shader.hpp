@@ -19,14 +19,12 @@ namespace alya::graphics::core
 		class loader
 		{
 		public:
-
-			template<typename Reader, typename Executor>
-			static async::promise<vertex_shader> async_load(std::string path, Reader reader, Executor ex, context_base&context)
+			using resource_type = vertex_shader;
+			
+			template<typename Data>
+			static vertex_shader load(const Data& data, context_base& context)
 			{
-				auto data = co_await reader.async_read(path);
-				auto data_begin = reinterpret_cast<const char*>(&*std::begin(data));
-				auto data_end = reinterpret_cast<const char*>(&*--std::end(data) + 1);
-				co_return vertex_shader(data_begin, data_end - data_begin, context);
+				return vertex_shader(data.data(), data.size(), context);
 			}
 		};
 
